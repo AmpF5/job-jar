@@ -15,3 +15,15 @@ spring:
     show-sql: true
     properties:
       hibernate.format_sql: true
+
+http-clients:
+  JUST_JOIN_IT:
+    headers:
+      version: 2
+    url:
+      base: api.justjoin.it
+      version: v2
+      path: user-panel/offers
+    params:
+      sortBy: published
+      perPage: 100
