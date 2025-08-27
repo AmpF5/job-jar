@@ -13,7 +13,7 @@ public class JustJoinItConnector implements BaseConnector {
     }
 
     @Override
-    public void GetOffers() {
-        baseClient.GetRequest();
+    public void getOffers() {
+        baseClient.getRequest();
     }
 }
