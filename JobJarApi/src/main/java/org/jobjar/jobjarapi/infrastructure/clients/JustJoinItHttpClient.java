@@ -1,7 +1,10 @@
 package org.jobjar.jobjarapi.infrastructure.clients;
 
-import org.jobjar.jobjarapi.domain.configuration.HttpClientName;
-import org.jobjar.jobjarapi.infrastructure.HttpClientPropertiesService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.jobjar.jobjarapi.domain.responses.JustJoinItResponse;
+import org.jobjar.jobjarapi.infrastructure.services.HttpClientPropertiesService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,13 +15,14 @@ import java.time.Duration;
 
 @Service
 public class JustJoinItHttpClient implements BaseClient {
-    private static final HttpClientName HTTP_CLIENT_NAME = HttpClientName.JUST_JOIN_IT;
     private final HttpClientPropertiesService httpClientPropertiesService;
     private final HttpClient httpClient;
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    public JustJoinItHttpClient(HttpClientPropertiesService httpClientPropertiesService1) {
-        this.httpClientPropertiesService = httpClientPropertiesService1;
+    public JustJoinItHttpClient(@Qualifier("justjoinit") HttpClientPropertiesService httpClientPropertiesService) {
+        this.httpClientPropertiesService = httpClientPropertiesService;
         this.httpClient = buildHttpClient();
+        mapper.registerModule(new JavaTimeModule());
     }
 
     @Override
@@ -27,6 +31,7 @@ public class JustJoinItHttpClient implements BaseClient {
 
         try {
             var resp = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
+            var mappedResp = mapper.readValue(resp.body(), JustJoinItResponse.class);
             System.out.println(resp.body());
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -42,10 +47,10 @@ public class JustJoinItHttpClient implements BaseClient {
     }
 
     private HttpRequest buildRequest() {
-        var request = HttpRequest.newBuilder(httpClientPropertiesService.getUri(HTTP_CLIENT_NAME))
+        var request = HttpRequest.newBuilder(httpClientPropertiesService.getUri())
                 .GET();
 
-        httpClientPropertiesService.getHeaders(HTTP_CLIENT_NAME).forEach(request::header);
+        httpClientPropertiesService.getHeaders().forEach(request::header);
 
         return request.build();
     }
