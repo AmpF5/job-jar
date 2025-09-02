@@ -1,5 +1,6 @@
-package org.jobjar.jobjarapi.domain.configuration;
+package org.jobjar.jobjarapi.configuration;
 
+import org.jobjar.jobjarapi.domain.entity.HttpClientName;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

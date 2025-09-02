@@ -1,6 +1,6 @@
 package org.jobjar.jobjarapi.infrastructure.services;
 
-import org.jobjar.jobjarapi.domain.configuration.HttpClientProperties;
+import org.jobjar.jobjarapi.configuration.HttpClientProperties;
 
 import java.net.URI;
 import java.util.Map;

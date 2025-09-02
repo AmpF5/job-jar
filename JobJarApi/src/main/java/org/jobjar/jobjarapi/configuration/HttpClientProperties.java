@@ -1,4 +1,4 @@
-package org.jobjar.jobjarapi.domain.configuration;
+package org.jobjar.jobjarapi.configuration;
 
 import java.util.Map;
 

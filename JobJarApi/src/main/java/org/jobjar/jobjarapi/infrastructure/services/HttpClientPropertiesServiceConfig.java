@@ -1,7 +1,7 @@
 package org.jobjar.jobjarapi.infrastructure.services;
 
-import org.jobjar.jobjarapi.domain.configuration.HttpClientName;
-import org.jobjar.jobjarapi.domain.configuration.HttpClientPropertiesConfig;
+import org.jobjar.jobjarapi.domain.entity.HttpClientName;
+import org.jobjar.jobjarapi.configuration.HttpClientPropertiesConfig;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

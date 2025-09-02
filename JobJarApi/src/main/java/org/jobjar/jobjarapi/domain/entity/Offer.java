@@ -1,12 +1,12 @@
-package org.jobjar.jobjarapi.domain;
+package org.jobjar.jobjarapi.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.jobjar.jobjarapi.domain.responses.JustJoinItResponse;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -23,7 +23,13 @@ public class Offer {
 
     private String slug;
 
-    private List<Skill> requiredSkills;
+    @ManyToMany
+    @JoinTable(
+            name = "offer_requiredSkills",
+            joinColumns = @JoinColumn(name = "offerId"),
+            inverseJoinColumns = @JoinColumn(name = "skillId")
+    )
+    private Set<Skill> requiredSkills;
 
     private WorkplaceType workplaceType;
 
