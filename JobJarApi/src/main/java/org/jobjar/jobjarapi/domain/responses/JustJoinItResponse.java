@@ -1,0 +1,85 @@
+package org.jobjar.jobjarapi.domain.responses;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.Instant;
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class JustJoinItResponse {
+    private List<JustJoinItJob> data;
+
+    // === Inner types ===
+    @Data
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class JustJoinItJob {
+        private String guid;
+        private String slug;
+        private String title;
+        private List<String> requiredSkills;
+        private List<String> niceToHaveSkills;
+        private String workplaceType;
+        private String workingTime;
+        private String experienceLevel;
+        private List<EmploymentType> employmentTypes;
+        private Integer categoryId;
+        private List<MultiLocation> multilocation;
+        private String city;
+        private String street;
+        private Double latitude;
+        private Double longitude;
+        private Boolean remoteInterview;
+        private String companyName;
+        private String companyLogoThumbUrl;
+        private Instant publishedAt;
+        private Instant expiredAt;
+        private Boolean openToHireUkrainians;
+        private List<Language> languages;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class EmploymentType {
+        private Float from;
+        private Float to;
+        private String currency;
+        private String type;
+        private String unit;
+        private Boolean gross;
+        private Float fromChf;
+        private Float fromEur;
+        private Float fromGbp;
+        private Float fromPln;
+        private Float fromUsd;
+        private Float toChf;
+        private Float toEur;
+        private Float toGbp;
+        private Float toPln;
+        private Float toUsd;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class MultiLocation {
+        private String city;
+        private String slug;
+        private String street;
+        private Double latitude;
+        private Double longitude;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Language {
+        private String code;
+        private String level;
+    }
+}

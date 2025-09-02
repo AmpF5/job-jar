@@ -12,9 +12,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.List;
 
 @Service
-public class JustJoinItHttpClient implements BaseClient {
+public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.JustJoinItJob>, BaseHttpClientBuilder{
     private final HttpClientPropertiesService httpClientPropertiesService;
     private final HttpClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -26,19 +27,20 @@ public class JustJoinItHttpClient implements BaseClient {
     }
 
     @Override
-    public void getRequest() {
+    public List<JustJoinItResponse.JustJoinItJob> getRequest() {
         var req = buildRequest();
 
         try {
             var resp = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
             var mappedResp = mapper.readValue(resp.body(), JustJoinItResponse.class);
             System.out.println(resp.body());
+            return mappedResp.getData();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private HttpClient buildHttpClient() {
+    public HttpClient buildHttpClient() {
         return HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_2)
                 .connectTimeout(Duration.ofSeconds(10))
@@ -46,7 +48,7 @@ public class JustJoinItHttpClient implements BaseClient {
                 .build();
     }
 
-    private HttpRequest buildRequest() {
+    public HttpRequest buildRequest() {
         var request = HttpRequest.newBuilder(httpClientPropertiesService.getUri())
                 .GET();
 
