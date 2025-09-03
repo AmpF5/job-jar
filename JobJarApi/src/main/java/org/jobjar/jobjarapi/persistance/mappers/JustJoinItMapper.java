@@ -1,8 +1,8 @@
-package org.jobjar.jobjarapi.infrastructure.mappers;
+package org.jobjar.jobjarapi.persistance.mappers;
 
 import lombok.experimental.ExtensionMethod;
-import org.jobjar.jobjarapi.domain.entity.Offer;
-import org.jobjar.jobjarapi.domain.responses.JustJoinItResponse;
+import org.jobjar.jobjarapi.domain.models.entities.Offer;
+import org.jobjar.jobjarapi.domain.models.responses.JustJoinItResponse;
 
 @ExtensionMethod({JustJoinItResponse.JustJoinItJob.class})
 public final class JustJoinItMapper {

@@ -1,4 +1,4 @@
-package org.jobjar.jobjarapi.infrastructure.adapters;
+package org.jobjar.jobjarapi.adapters;
 
 public interface BaseAdapter {
     void getOffers();

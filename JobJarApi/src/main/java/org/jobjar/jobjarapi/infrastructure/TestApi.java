@@ -1,6 +1,6 @@
 package org.jobjar.jobjarapi.infrastructure;
 
-import org.jobjar.jobjarapi.infrastructure.adapters.JustJoinItAdapter;
+import org.jobjar.jobjarapi.adapters.JustJoinItAdapter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

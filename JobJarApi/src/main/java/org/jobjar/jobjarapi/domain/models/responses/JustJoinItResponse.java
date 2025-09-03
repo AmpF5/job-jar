@@ -1,4 +1,4 @@
-package org.jobjar.jobjarapi.domain.responses;
+package org.jobjar.jobjarapi.domain.models.responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

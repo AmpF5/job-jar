@@ -1,15 +1,15 @@
-package org.jobjar.jobjarapi.infrastructure.adapters;
+package org.jobjar.jobjarapi.adapters;
 
 import org.antlr.v4.runtime.misc.Pair;
-import org.jobjar.jobjarapi.domain.entity.Offer;
-import org.jobjar.jobjarapi.domain.entity.Skill;
-import org.jobjar.jobjarapi.domain.responses.JustJoinItResponse;
+import org.jobjar.jobjarapi.domain.models.entities.Offer;
+import org.jobjar.jobjarapi.domain.models.entities.Skill;
+import org.jobjar.jobjarapi.domain.models.responses.JustJoinItResponse;
 import org.jobjar.jobjarapi.infrastructure.clients.BaseHttpClient;
 import org.jobjar.jobjarapi.infrastructure.clients.JustJoinItHttpClient;
-import org.jobjar.jobjarapi.infrastructure.mappers.JustJoinItMapper;
-import org.jobjar.jobjarapi.infrastructure.mappers.SkillMapper;
-import org.jobjar.jobjarapi.infrastructure.repositories.OfferRepository;
-import org.jobjar.jobjarapi.infrastructure.repositories.SkillRepository;
+import org.jobjar.jobjarapi.persistance.mappers.JustJoinItMapper;
+import org.jobjar.jobjarapi.persistance.mappers.SkillMapper;
+import org.jobjar.jobjarapi.persistance.repositories.OfferRepository;
+import org.jobjar.jobjarapi.persistance.repositories.SkillRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class JustJoinItAdapter implements BaseAdapter {
 
         pairs.forEach(x ->  {
             mapSkills(x);
-            mapCompanies(x);
+//            mapCompanies(x);
         });
 
         return pairs
@@ -72,5 +72,4 @@ public class JustJoinItAdapter implements BaseAdapter {
         pair.a.setRequiredSkills(skills);
     }
 
-    public void mapCompanies(Pair<Offer, JustJoinItResponse.JustJoinItJob> pair) {}
 }

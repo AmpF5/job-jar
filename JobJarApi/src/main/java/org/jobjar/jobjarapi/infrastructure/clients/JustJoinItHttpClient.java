@@ -2,7 +2,7 @@ package org.jobjar.jobjarapi.infrastructure.clients;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.jobjar.jobjarapi.domain.responses.JustJoinItResponse;
+import org.jobjar.jobjarapi.domain.models.responses.JustJoinItResponse;
 import org.jobjar.jobjarapi.infrastructure.services.HttpClientPropertiesService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.time.Duration;
 import java.util.List;
 
 @Service
-public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.JustJoinItJob>, BaseHttpClientBuilder{
+public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.JustJoinItJob>, BaseHttpClientBuilder {
     private final HttpClientPropertiesService httpClientPropertiesService;
     private final HttpClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();

@@ -1,4 +1,4 @@
-package org.jobjar.jobjarapi.domain.entity;
+package org.jobjar.jobjarapi.domain.models.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;

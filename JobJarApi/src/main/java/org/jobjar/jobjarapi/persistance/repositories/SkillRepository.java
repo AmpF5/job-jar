@@ -1,6 +1,6 @@
-package org.jobjar.jobjarapi.infrastructure.repositories;
+package org.jobjar.jobjarapi.persistance.repositories;
 
-import org.jobjar.jobjarapi.domain.entity.Skill;
+import org.jobjar.jobjarapi.domain.models.entities.Skill;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

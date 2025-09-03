@@ -1,8 +1,8 @@
 package org.jobjar.jobjarapi.infrastructure.services;
 
-import org.jobjar.jobjarapi.domain.entity.HttpClientName;
-import org.jobjar.jobjarapi.configuration.HttpClientProperties;
-import org.jobjar.jobjarapi.configuration.HttpClientPropertiesConfig;
+import org.jobjar.jobjarapi.domain.models.entities.HttpClientName;
+import org.jobjar.jobjarapi.infrastructure.configuration.HttpClientProperties;
+import org.jobjar.jobjarapi.infrastructure.configuration.HttpClientPropertiesConfig;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;

@@ -1,6 +1,6 @@
-package org.jobjar.jobjarapi.infrastructure.repositories;
+package org.jobjar.jobjarapi.persistance.repositories;
 
-import org.jobjar.jobjarapi.domain.entity.Company;
+import org.jobjar.jobjarapi.domain.models.entities.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

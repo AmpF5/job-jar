@@ -1,4 +1,4 @@
-package org.jobjar.jobjarapi.infrastructure.mappers;
+package org.jobjar.jobjarapi.persistance.mappers;
 
 public final class SkillMapper {
 

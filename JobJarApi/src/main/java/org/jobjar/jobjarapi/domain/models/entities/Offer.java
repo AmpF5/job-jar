@@ -1,11 +1,10 @@
-package org.jobjar.jobjarapi.domain.entity;
+package org.jobjar.jobjarapi.domain.models.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Set;
 
 @Entity
