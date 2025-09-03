@@ -1,11 +1,13 @@
 package org.jobjar.jobjarapi.adapters;
 
+import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.misc.Pair;
 import org.jobjar.jobjarapi.domain.models.entities.Offer;
 import org.jobjar.jobjarapi.domain.models.entities.Skill;
 import org.jobjar.jobjarapi.domain.models.responses.JustJoinItResponse;
 import org.jobjar.jobjarapi.infrastructure.clients.BaseHttpClient;
 import org.jobjar.jobjarapi.infrastructure.clients.JustJoinItHttpClient;
+import org.jobjar.jobjarapi.persistance.helpers.SkillHelper;
 import org.jobjar.jobjarapi.persistance.mappers.JustJoinItMapper;
 import org.jobjar.jobjarapi.persistance.mappers.SkillMapper;
 import org.jobjar.jobjarapi.persistance.repositories.OfferRepository;
@@ -17,24 +19,15 @@ import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class JustJoinItAdapter implements BaseAdapter {
     private final BaseHttpClient<JustJoinItResponse.JustJoinItJob> baseClient;
-
-    private final OfferRepository offerRepository;
-
-    private final SkillRepository skillRepository;
-    public JustJoinItAdapter(JustJoinItHttpClient client, OfferRepository offerRepository, SkillRepository skillRepository) {
-        baseClient = client;
-        this.offerRepository = offerRepository;
-        this.skillRepository = skillRepository;
-    }
+    private final SkillHelper skillHelper;
 
     @Override
     public void getOffers() {
         var justJoinItJobs= baseClient.getRequest();
-
-        var skill = skillRepository.findByVariant("jAVa");
-        System.out.println(skill.toString());
+        var offers = prepareEntityData(justJoinItJobs);
     }
 
     private List<Offer> prepareEntityData(List<JustJoinItResponse.JustJoinItJob> resp) {
@@ -43,9 +36,8 @@ public class JustJoinItAdapter implements BaseAdapter {
                .map(x -> new Pair<>(JustJoinItMapper.toOffer(x), x))
                .toList();
 
-        pairs.forEach(x ->  {
-            mapSkills(x);
-//            mapCompanies(x);
+        pairs.forEach(x -> {
+           skillHelper.handleRequiredSkills(x.a, x.b.getRequiredSkills());
         });
 
         return pairs
@@ -53,23 +45,4 @@ public class JustJoinItAdapter implements BaseAdapter {
                 .map(x -> x.a)
                 .toList();
     }
-
-    public void mapSkills(Pair<Offer, JustJoinItResponse.JustJoinItJob> pair) {
-        var normalizedSkills= pair.b
-                .getRequiredSkills()
-                .stream()
-                .map(SkillMapper::normalize)
-                .collect(Collectors.toSet());
-
-        var skills = normalizedSkills
-                .stream()
-                .map(x -> skillRepository
-                        .findByName(x)
-                        .orElse(skillRepository.save(new Skill(x)))
-                )
-                .collect(Collectors.toSet());
-
-        pair.a.setRequiredSkills(skills);
-    }
-
 }
