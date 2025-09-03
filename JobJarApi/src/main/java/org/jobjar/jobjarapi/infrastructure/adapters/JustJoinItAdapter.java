@@ -1,4 +1,4 @@
-package org.jobjar.jobjarapi.infrastructure.connectors;
+package org.jobjar.jobjarapi.infrastructure.adapters;
 
 import org.antlr.v4.runtime.misc.Pair;
 import org.jobjar.jobjarapi.domain.entity.Offer;
@@ -12,19 +12,18 @@ import org.jobjar.jobjarapi.infrastructure.repositories.OfferRepository;
 import org.jobjar.jobjarapi.infrastructure.repositories.SkillRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 @Service
-public class JustJoinItConnector implements BaseConnector {
+public class JustJoinItAdapter implements BaseAdapter {
     private final BaseHttpClient<JustJoinItResponse.JustJoinItJob> baseClient;
 
     private final OfferRepository offerRepository;
 
     private final SkillRepository skillRepository;
-    public JustJoinItConnector(JustJoinItHttpClient client, OfferRepository offerRepository, SkillRepository skillRepository) {
+    public JustJoinItAdapter(JustJoinItHttpClient client, OfferRepository offerRepository, SkillRepository skillRepository) {
         baseClient = client;
         this.offerRepository = offerRepository;
         this.skillRepository = skillRepository;
@@ -33,6 +32,9 @@ public class JustJoinItConnector implements BaseConnector {
     @Override
     public void getOffers() {
         var justJoinItJobs= baseClient.getRequest();
+
+        var skill = skillRepository.findByVariant("jAVa");
+        System.out.println(skill.toString());
     }
 
     private List<Offer> prepareEntityData(List<JustJoinItResponse.JustJoinItJob> resp) {
