@@ -22,7 +22,7 @@ public class Offer {
 
     private String slug;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "offer_requiredSkills",
             joinColumns = @JoinColumn(name = "offerId"),

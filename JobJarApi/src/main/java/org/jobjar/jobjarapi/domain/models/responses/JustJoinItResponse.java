@@ -13,7 +13,9 @@ import java.util.List;
 public class JustJoinItResponse {
     private List<JustJoinItJob> data;
 
-    // === Inner types ===
+    private JustJoinItMetaData meta;
+
+    // === Inner data types ===
     @Data
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -81,5 +83,16 @@ public class JustJoinItResponse {
     public static class Language {
         private String code;
         private String level;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class JustJoinItMetaData {
+       private Integer page;
+       private Integer totalItems;
+       private Integer totalPages;
+       private Integer prevPage;
+       private Integer nextPage;
     }
 }
