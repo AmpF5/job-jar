@@ -16,6 +16,14 @@ spring:
     properties:
       hibernate.format_sql: true
 
+logging:
+  file:
+    name: logs/main.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n"
+  level:
+    root: info
+
 http-clients:
   JUST_JOIN_IT:
     headers:

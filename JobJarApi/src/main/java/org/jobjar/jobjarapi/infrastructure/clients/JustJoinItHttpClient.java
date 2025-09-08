@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.jobjar.jobjarapi.domain.models.responses.JustJoinItResponse;
 import org.jobjar.jobjarapi.infrastructure.services.HttpClientPropertiesService;
+import org.jobjar.jobjarapi.utils.TimeConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -25,6 +28,7 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
     private final HttpClientPropertiesService httpClientPropertiesService;
     private final HttpClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();
+    private final static Logger log = LoggerFactory.getLogger(JustJoinItHttpClient.class);
 
     public JustJoinItHttpClient(@Qualifier("justjoinit") HttpClientPropertiesService httpClientPropertiesService) {
         this.httpClientPropertiesService = httpClientPropertiesService;
@@ -34,21 +38,28 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
 
     @Override
     public List<JustJoinItResponse.JustJoinItJob> getRequest() {
+        log.info("Getting data from justjoin.it");
         var req = buildRequest(httpClientPropertiesService.getUri());
 
         try {
             var firstResp = httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofString()).get();
             var firstMappedResp = mapper.readValue(firstResp.body(), JustJoinItResponse.class);
+
             var numberOfPages = firstMappedResp.getMeta().getTotalPages();
+            log.info("Number of pages: {}", numberOfPages);
 
             var allResponses = getAllJustJoinItResponses(getAllJustJoinItUris(numberOfPages));
             allResponses.add(firstMappedResp);
 
-            return allResponses
+            var result = allResponses
                     .stream()
                     .flatMap(x -> x.getData().stream())
                     .toList();
+            log.info("Job offers: {}.", result.size());
+
+            return result;
         } catch (IOException | InterruptedException | ExecutionException e) {
+            log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
@@ -74,6 +85,7 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
     }
 
     private List<JustJoinItResponse> getAllJustJoinItResponses(List<URI> uris) throws InterruptedException, ExecutionException {
+        var start = System.nanoTime();
         var requests = uris
                 .stream()
                 .map(this::buildRequest)
@@ -87,7 +99,7 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
                 )
                 .toList();
 
-        return CompletableFuture
+        var result = CompletableFuture
                 .allOf(futureRequests.toArray(new CompletableFuture<?>[0]))
                 .thenApply(x -> futureRequests
                         .stream()
@@ -102,6 +114,10 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
                         .toList()
                 )
                 .get();
+        var end = System.nanoTime();
+        log.info("Fetch data in {} ms", TimeConverter.getElapsedTime(start, end));
+
+        return result;
     }
 
     private List<URI> getAllJustJoinItUris(int numberOfPages) {
