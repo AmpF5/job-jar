@@ -1,6 +1,6 @@
 package org.jobjar.jobjarapi.infrastructure.services;
 
-import org.jobjar.jobjarapi.domain.models.entities.HttpClientName;
+import org.jobjar.jobjarapi.domain.enums.HttpClientName;
 import org.jobjar.jobjarapi.infrastructure.configuration.HttpClientProperties;
 import org.jobjar.jobjarapi.infrastructure.configuration.HttpClientPropertiesConfig;
 import org.springframework.web.util.UriComponentsBuilder;

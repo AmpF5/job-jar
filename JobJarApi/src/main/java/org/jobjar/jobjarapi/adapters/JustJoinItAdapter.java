@@ -1,48 +1,32 @@
 package org.jobjar.jobjarapi.adapters;
 
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.misc.Pair;
-import org.jobjar.jobjarapi.domain.models.entities.Offer;
-import org.jobjar.jobjarapi.domain.models.entities.Skill;
+import org.jobjar.jobjarapi.domain.dtos.OfferCreateDto;
 import org.jobjar.jobjarapi.domain.models.responses.JustJoinItResponse;
 import org.jobjar.jobjarapi.infrastructure.clients.BaseHttpClient;
-import org.jobjar.jobjarapi.infrastructure.clients.JustJoinItHttpClient;
-import org.jobjar.jobjarapi.persistance.helpers.SkillHelper;
-import org.jobjar.jobjarapi.persistance.mappers.JustJoinItMapper;
-import org.jobjar.jobjarapi.persistance.mappers.SkillMapper;
-import org.jobjar.jobjarapi.persistance.repositories.OfferRepository;
-import org.jobjar.jobjarapi.persistance.repositories.SkillRepository;
+import org.jobjar.jobjarapi.persistance.mappers.OfferMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
 @RequiredArgsConstructor
 public class JustJoinItAdapter implements BaseAdapter {
     private final BaseHttpClient<JustJoinItResponse.JustJoinItJob> baseClient;
-    private final SkillHelper skillHelper;
 
     @Override
-    public void getOffers() {
+    public List<OfferCreateDto> getOffers() {
         var justJoinItJobs= baseClient.getRequest();
-        var offers = prepareEntityData(justJoinItJobs);
+        return prepareEntityData(justJoinItJobs);
     }
 
-    private List<Offer> prepareEntityData(List<JustJoinItResponse.JustJoinItJob> resp) {
-       var pairs = resp
-               .stream()
-               .map(x -> new Pair<>(JustJoinItMapper.toOffer(x), x))
-               .toList();
-
-        pairs.forEach(x -> {
-           skillHelper.handleRequiredSkills(x.a, x.b.getRequiredSkills());
-        });
-
-        return pairs
+    private List<OfferCreateDto> prepareEntityData(List<JustJoinItResponse.JustJoinItJob> resp) {
+        return resp
                 .stream()
-                .map(x -> x.a)
+                .map(OfferMapper::toOfferCreateDto)
                 .toList();
     }
+
+
 }

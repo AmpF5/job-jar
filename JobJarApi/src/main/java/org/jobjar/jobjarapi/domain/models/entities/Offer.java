@@ -3,6 +3,8 @@ package org.jobjar.jobjarapi.domain.models.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jobjar.jobjarapi.domain.enums.ExperienceLevel;
+import org.jobjar.jobjarapi.domain.enums.WorkplaceType;
 
 import java.time.Instant;
 import java.util.Set;
@@ -42,9 +44,9 @@ public class Offer {
 
     private Instant expiredAt;
 
-    @JoinColumn(name = "company_id")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Company company;
+//    @JoinColumn(name = "company_id")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Company company;
 
     public Offer(String guid,
                  String title,

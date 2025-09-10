@@ -5,14 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-
 import java.util.List;
+
 import java.util.Set;
 
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "Skills")
+@Table(name = "skills")
 public class Skill {
 
     @Id
@@ -26,7 +26,7 @@ public class Skill {
     @Column(columnDefinition = "text[]")
     private List<String> variants;
 
-    @ManyToMany(mappedBy = "requiredSkills")
+    @ManyToMany(mappedBy = "requiredSkills", fetch = FetchType.LAZY)
     private Set<Offer> offers;
 
     public Skill(String name) {

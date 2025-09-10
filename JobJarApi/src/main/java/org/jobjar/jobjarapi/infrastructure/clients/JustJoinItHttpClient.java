@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -55,7 +56,7 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
                     .stream()
                     .flatMap(x -> x.getData().stream())
                     .toList();
-            log.info("Job offers: {}.", result.size());
+            log.info("Number of job offers: {}.", result.size());
 
             return result;
         } catch (IOException | InterruptedException | ExecutionException e) {
@@ -111,7 +112,7 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
                                 throw new RuntimeException(e);
                             }
                         })
-                        .toList()
+                        .collect(Collectors.toList())
                 )
                 .get();
         var end = System.nanoTime();

@@ -1,6 +1,6 @@
 package org.jobjar.jobjarapi.utils;
 
-public class TimeConverter {
+public abstract class TimeConverter {
     /**
      *
      * @param start Start in nanosecond {@code System.nanoTime()}
