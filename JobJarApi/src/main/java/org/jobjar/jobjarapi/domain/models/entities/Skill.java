@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 import java.util.List;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -16,8 +18,7 @@ import java.util.Set;
 public class Skill {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "skill_seq")
-    private Long skillId;
+    private UUID skillId;
 
     @Column(unique = true)
     private String name;

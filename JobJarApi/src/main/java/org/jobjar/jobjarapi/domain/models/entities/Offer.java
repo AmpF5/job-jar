@@ -3,20 +3,21 @@ package org.jobjar.jobjarapi.domain.models.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
 import org.jobjar.jobjarapi.domain.enums.ExperienceLevel;
 import org.jobjar.jobjarapi.domain.enums.WorkplaceType;
 
 import java.time.Instant;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "Offers")
+@Table(name = "offers")
 public class Offer {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offer_seq")
-    private Long offerId;
+    private UUID offerId;
 
     private String guid;
 
@@ -55,6 +56,7 @@ public class Offer {
                  Float maximalWage,
                  Instant publishedAt,
                  Instant expiredAt) {
+        this.offerId = UUID.randomUUID();
         this.guid = guid;
         this.title = title;
         this.slug = slug;

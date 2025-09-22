@@ -3,6 +3,10 @@ package org.jobjar.jobjarapi.domain.models.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -10,14 +14,15 @@ import lombok.NoArgsConstructor;
 @Table(name = "skill_snapshots")
 public class SkillSnapshot {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID skillSnapshotId;
 
     private String name;
 
-    private Long offerId;
+    private Set<UUID> offerIds;
 
-    public SkillSnapshot(String name) {
+    public SkillSnapshot(String name,  Set<UUID> offerIds) {
+        this.skillSnapshotId = UUID.randomUUID();
         this.name = name;
+        this.offerIds = offerIds;
     }
 }

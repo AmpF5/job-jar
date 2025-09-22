@@ -6,10 +6,9 @@ import org.jobjar.jobjarapi.domain.enums.WorkplaceType;
 import org.jobjar.jobjarapi.domain.models.entities.Offer;
 import org.jobjar.jobjarapi.domain.models.responses.JustJoinItResponse;
 
-import java.util.List;
+import java.util.HashSet;
 
 public final class OfferMapper {
-
     public static Offer toEntity(OfferCreateDto offerCreateDto) {
         return new Offer(
                 offerCreateDto.getGuid(),
@@ -20,8 +19,8 @@ public final class OfferMapper {
                 offerCreateDto.getPublishedAt(),
                 offerCreateDto.getExpiredAt()
         );
-
     }
+
     public static OfferCreateDto toOfferCreateDto(JustJoinItResponse.JustJoinItJob job) {
         return new OfferCreateDto(
                 job.getGuid(),
@@ -32,7 +31,8 @@ public final class OfferMapper {
                 1000f,
                 2000f,
                 job.getPublishedAt(),
-                job.getExpiredAt()
+                job.getExpiredAt(),
+                new HashSet<>(job.getRequiredSkills())
         );
     }
 }

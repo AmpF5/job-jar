@@ -7,10 +7,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface SkillRepository extends JpaRepository<Skill, Long> {
-    Optional<Skill> findBySkillId(Long skillId);
+public interface SkillRepository extends JpaRepository<Skill, UUID> {
+    Optional<Skill> findBySkillId(UUID skillId);
 
     Optional<Skill> findByName(String name);
 

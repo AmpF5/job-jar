@@ -3,14 +3,14 @@ package org.jobjar.jobjarapi.domain.dtos;
 import lombok.Data;
 import org.jobjar.jobjarapi.domain.enums.ExperienceLevel;
 import org.jobjar.jobjarapi.domain.enums.WorkplaceType;
+import org.jobjar.jobjarapi.domain.models.entities.Skill;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 @Data
 public final class OfferCreateDto {
-    // Should be filled after being inserted into database
-    private long offerId;
     private final String guid;
     private final String title;
     private final String slug;
@@ -20,6 +20,7 @@ public final class OfferCreateDto {
     private final Float maximalWage;
     private final Instant publishedAt;
     private final Instant expiredAt;
+    private Set<String> requiredSkills;
 
     public OfferCreateDto(
             String guid,
@@ -30,7 +31,8 @@ public final class OfferCreateDto {
             Float minimalWage,
             Float maximalWage,
             Instant publishedAt,
-            Instant expiredAt
+            Instant expiredAt,
+            Set<String> requiredSkills
     ) {
         this.guid = guid;
         this.title = title;
@@ -41,5 +43,6 @@ public final class OfferCreateDto {
         this.maximalWage = maximalWage;
         this.publishedAt = publishedAt;
         this.expiredAt = expiredAt;
+        this.requiredSkills = requiredSkills;
     }
 }

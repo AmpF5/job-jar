@@ -3,6 +3,9 @@ package org.jobjar.jobjarapi.domain.models.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 @Entity
 @Data
@@ -10,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "Companies")
 public class Company {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "offer_seq")
-    private Long companyId;
+    private UUID companyId;
 
 }

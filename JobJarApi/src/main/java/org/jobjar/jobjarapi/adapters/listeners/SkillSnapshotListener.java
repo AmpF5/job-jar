@@ -9,5 +9,6 @@ public class SkillSnapshotListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void on(Long offerId) {
         // TODO: Handle adding SkillSnapshot
+        System.out.println(offerId);
     }
 }

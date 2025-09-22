@@ -1,4 +1,4 @@
 package org.jobjar.jobjarapi.domain.dtos;
 
-public class SkillCreateDto {
+public final class SkillCreateDto {
 }

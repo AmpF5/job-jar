@@ -27,6 +27,4 @@ public class JustJoinItAdapter implements BaseAdapter {
                 .map(OfferMapper::toOfferCreateDto)
                 .toList();
     }
-
-
 }
