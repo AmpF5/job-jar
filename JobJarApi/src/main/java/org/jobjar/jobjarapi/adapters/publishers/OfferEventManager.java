@@ -42,7 +42,7 @@ public class OfferEventManager {
     public void notifyAllListeners() {
         listeners
                 .forEach((x, y) -> y
-                        .forEach( z -> {
+                        .forEach(z -> {
                             // TODO: Unsubscribe after notification
                             z.update(x);
                         }));

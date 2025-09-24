@@ -26,10 +26,10 @@ import java.util.stream.IntStream;
 
 @Service
 public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.JustJoinItJob>, BaseHttpClientBuilder {
+    private final static Logger log = LoggerFactory.getLogger(JustJoinItHttpClient.class);
     private final HttpClientPropertiesService httpClientPropertiesService;
     private final HttpClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();
-    private final static Logger log = LoggerFactory.getLogger(JustJoinItHttpClient.class);
 
     public JustJoinItHttpClient(@Qualifier("justjoinit") HttpClientPropertiesService httpClientPropertiesService) {
         this.httpClientPropertiesService = httpClientPropertiesService;

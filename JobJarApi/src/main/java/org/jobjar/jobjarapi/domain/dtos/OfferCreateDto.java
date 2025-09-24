@@ -4,10 +4,8 @@ import lombok.Data;
 import org.jobjar.jobjarapi.domain.enums.ExperienceLevel;
 import org.jobjar.jobjarapi.domain.enums.JobSite;
 import org.jobjar.jobjarapi.domain.enums.WorkplaceType;
-import org.jobjar.jobjarapi.domain.models.entities.Skill;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Set;
 
 @Data

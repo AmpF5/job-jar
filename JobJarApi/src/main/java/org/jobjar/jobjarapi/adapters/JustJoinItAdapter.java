@@ -17,7 +17,7 @@ public class JustJoinItAdapter implements BaseAdapter {
 
     @Override
     public List<OfferCreateDto> getOffers() {
-        var justJoinItJobs= baseClient.getRequest();
+        var justJoinItJobs = baseClient.getRequest();
         return prepareEntityData(justJoinItJobs);
     }
 

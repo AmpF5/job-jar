@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class HttpClientPropertiesServiceConfig {
     private final HttpClientPropertiesConfig config;
 
-    public HttpClientPropertiesServiceConfig(HttpClientPropertiesConfig config){
+    public HttpClientPropertiesServiceConfig(HttpClientPropertiesConfig config) {
         this.config = config;
     }
 

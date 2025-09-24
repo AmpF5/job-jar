@@ -89,10 +89,10 @@ public class JustJoinItResponse {
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class JustJoinItMetaData {
-       private Integer page;
-       private Integer totalItems;
-       private Integer totalPages;
-       private Integer prevPage;
-       private Integer nextPage;
+        private Integer page;
+        private Integer totalItems;
+        private Integer totalPages;
+        private Integer prevPage;
+        private Integer nextPage;
     }
 }

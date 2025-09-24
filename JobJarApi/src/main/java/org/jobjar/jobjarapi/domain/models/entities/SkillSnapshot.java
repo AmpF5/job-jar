@@ -1,6 +1,8 @@
 package org.jobjar.jobjarapi.domain.models.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +21,7 @@ public class SkillSnapshot {
 
     private Set<UUID> offerIds;
 
-    public SkillSnapshot(String name,  Set<UUID> offerIds) {
+    public SkillSnapshot(String name, Set<UUID> offerIds) {
         this.skillSnapshotId = UUID.randomUUID();
         this.name = name;
         this.offerIds = offerIds;

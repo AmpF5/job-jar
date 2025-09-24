@@ -7,5 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SkillSnapshotRepository extends JpaRepository<SkillSnapshot, UUID> {
-   Optional<SkillSnapshot> findByName(String name);
+    Optional<SkillSnapshot> findByName(String name);
 }

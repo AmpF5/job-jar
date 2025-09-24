@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
-import java.util.List;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

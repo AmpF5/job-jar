@@ -16,11 +16,11 @@ public class SkillSnapshotService {
 
     @Transactional
     public void bulkSaveSkillSnapshots(List<SkillSnapshotCreateDto> skillSnapshots) {
-       skillSnapshotRepository
-               .saveAllAndFlush(skillSnapshots
-                       .stream()
-                       .map(SkillSnapshotMapper::toEntity)
-                       .toList());
+        skillSnapshotRepository
+                .saveAllAndFlush(skillSnapshots
+                        .stream()
+                        .map(SkillSnapshotMapper::toEntity)
+                        .toList());
 
     }
 }

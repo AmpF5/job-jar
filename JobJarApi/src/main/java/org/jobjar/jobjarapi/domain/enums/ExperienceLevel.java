@@ -25,12 +25,12 @@ public enum ExperienceLevel {
     }
 
     public static ExperienceLevel map(String value) {
-        if(value == null || value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             return UNKNOWN;
         }
 
         var experienceLevel = LOOKUP.get(value);
-        if(experienceLevel == null) {
+        if (experienceLevel == null) {
             log.warn("Unknown ExperienceLevel: {}", value);
             return UNKNOWN;
         }

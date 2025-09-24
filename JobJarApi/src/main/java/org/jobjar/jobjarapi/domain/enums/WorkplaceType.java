@@ -14,7 +14,7 @@ public enum WorkplaceType {
 
     private static final Set<String> OFFICE_VARIANTS = Set.of("office");
     private static final Set<String> HYBRID_VARIANTS = Set.of("hybrid");
-    private static final Set<String> REMOTE_VARIANTS= Set.of("remote");
+    private static final Set<String> REMOTE_VARIANTS = Set.of("remote");
 
     private static final Map<String, WorkplaceType> LOOKUP;
 

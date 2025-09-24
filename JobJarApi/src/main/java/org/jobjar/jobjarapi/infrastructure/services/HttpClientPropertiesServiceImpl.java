@@ -21,7 +21,7 @@ public class HttpClientPropertiesServiceImpl implements HttpClientPropertiesServ
     }
 
     public void buildUri() {
-        var baseUrl = String.join("/",getUrl().values());
+        var baseUrl = String.join("/", getUrl().values());
         var uriComponentBuilder = UriComponentsBuilder
                 .newInstance()
                 .scheme("https")
