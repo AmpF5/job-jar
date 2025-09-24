@@ -3,7 +3,6 @@ package org.jobjar.jobjarapi.domain.models.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
 import org.jobjar.jobjarapi.domain.enums.ExperienceLevel;
 import org.jobjar.jobjarapi.domain.enums.WorkplaceType;
 

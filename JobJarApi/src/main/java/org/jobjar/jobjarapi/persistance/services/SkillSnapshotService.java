@@ -1,5 +1,6 @@
 package org.jobjar.jobjarapi.persistance.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jobjar.jobjarapi.domain.dtos.SkillSnapshotCreateDto;
 import org.jobjar.jobjarapi.persistance.mappers.SkillSnapshotMapper;
@@ -13,6 +14,7 @@ import java.util.List;
 public class SkillSnapshotService {
     private final SkillSnapshotRepository skillSnapshotRepository;
 
+    @Transactional
     public void bulkSaveSkillSnapshots(List<SkillSnapshotCreateDto> skillSnapshots) {
        skillSnapshotRepository
                .saveAllAndFlush(skillSnapshots
@@ -21,6 +23,4 @@ public class SkillSnapshotService {
                        .toList());
 
     }
-
-
 }
