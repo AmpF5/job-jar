@@ -3,7 +3,6 @@ package org.jobjar.jobjarapi.persistance.services;
 import lombok.RequiredArgsConstructor;
 import org.jobjar.jobjarapi.domain.dtos.OfferCreateDto;
 import org.jobjar.jobjarapi.domain.models.entities.Skill;
-import org.jobjar.jobjarapi.domain.models.entities.SkillSnapshot;
 import org.jobjar.jobjarapi.domain.models.generics.Tuple;
 import org.jobjar.jobjarapi.persistance.repositories.SkillRepository;
 import org.jobjar.jobjarapi.persistance.repositories.SkillSnapshotRepository;
@@ -22,7 +21,7 @@ public class SkillService {
     private final SkillRepository skillRepository;
     private final SkillSnapshotRepository skillSnapshotRepository;
 
-    public Tuple<Set<Skill>, Set<String>> handleRequiredSkills(OfferCreateDto offerCreateDto) {
+    public Tuple<Set<Skill>, Set<String>> getRequiredSkillsAndSnapshots(OfferCreateDto offerCreateDto) {
         var snapshots = new HashSet<String>();
         var requiredSkills = offerCreateDto.getRequiredSkills()
                 .stream()

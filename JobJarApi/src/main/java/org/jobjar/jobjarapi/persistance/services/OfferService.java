@@ -19,17 +19,18 @@ public class OfferService {
 
     @Transactional
     public void bulkSaveOffers(List<OfferCreateDto> offers) {
+        // TODO: Take off limiter
         offers = offers.stream().limit(10).toList();
         var skillSnapshots = new HashMap<String, Set<UUID>>();
 
         offerRepository.saveAllAndFlush(offers.stream().map(x -> {
             // Handling offer data
             var offer = OfferMapper.toEntity(x);
-            var skills = skillService.handleRequiredSkills(x);
-            offer.setRequiredSkills(skills.t1());
+            var skillsAndSnapshots = skillService.getRequiredSkillsAndSnapshots(x);
+            offer.setRequiredSkills(skillsAndSnapshots.t1());
 
             // Handling snapshots
-            skills.t2().forEach(y -> {
+            skillsAndSnapshots.t2().forEach(y -> {
                 if (skillSnapshots.containsKey(y)) {
                     skillSnapshots.get(y).add(offer.getOfferId());
                 } else {

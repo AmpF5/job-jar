@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jobjar.jobjarapi.domain.enums.ExperienceLevel;
+import org.jobjar.jobjarapi.domain.enums.JobSite;
 import org.jobjar.jobjarapi.domain.enums.WorkplaceType;
 
 import java.time.Instant;
@@ -27,14 +28,19 @@ public class Offer {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "offer_requiredSkills",
-            joinColumns = @JoinColumn(name = "offerId"),
-            inverseJoinColumns = @JoinColumn(name = "skillId")
+            joinColumns = @JoinColumn(name = "offer_Id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_Id")
     )
     private Set<Skill> requiredSkills;
 
+    @Enumerated(EnumType.STRING)
     private WorkplaceType workplaceType;
 
+    @Enumerated(EnumType.STRING)
     private ExperienceLevel experienceLevel;
+
+    @Enumerated(EnumType.STRING)
+    private JobSite jobSite;
 
     private Float minimalWage;
 
@@ -51,17 +57,24 @@ public class Offer {
     public Offer(String guid,
                  String title,
                  String slug,
+                 WorkplaceType workplaceType,
+                 ExperienceLevel experienceLevel,
                  Float minimalWage,
                  Float maximalWage,
                  Instant publishedAt,
-                 Instant expiredAt) {
+                 Instant expiredAt,
+                 JobSite jobSite
+    ) {
         this.offerId = UUID.randomUUID();
         this.guid = guid;
         this.title = title;
         this.slug = slug;
+        this.workplaceType = workplaceType;
+        this.experienceLevel = experienceLevel;
         this.minimalWage = minimalWage;
         this.maximalWage = maximalWage;
         this.publishedAt = publishedAt;
         this.expiredAt = expiredAt;
+        this.jobSite = jobSite;
     }
 }

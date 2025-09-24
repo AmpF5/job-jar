@@ -2,6 +2,7 @@ package org.jobjar.jobjarapi.persistance.mappers;
 
 import org.jobjar.jobjarapi.domain.dtos.OfferCreateDto;
 import org.jobjar.jobjarapi.domain.enums.ExperienceLevel;
+import org.jobjar.jobjarapi.domain.enums.JobSite;
 import org.jobjar.jobjarapi.domain.enums.WorkplaceType;
 import org.jobjar.jobjarapi.domain.models.entities.Offer;
 import org.jobjar.jobjarapi.domain.models.responses.JustJoinItResponse;
@@ -14,10 +15,13 @@ public final class OfferMapper {
                 offerCreateDto.getGuid(),
                 offerCreateDto.getTitle(),
                 offerCreateDto.getSlug(),
+                offerCreateDto.getWorkplaceType(),
+                offerCreateDto.getExperienceLevel(),
                 offerCreateDto.getMinimalWage(),
                 offerCreateDto.getMaximalWage(),
                 offerCreateDto.getPublishedAt(),
-                offerCreateDto.getExpiredAt()
+                offerCreateDto.getExpiredAt(),
+                offerCreateDto.getJobSite()
         );
     }
 
@@ -26,8 +30,9 @@ public final class OfferMapper {
                 job.getGuid(),
                 job.getTitle(),
                 job.getSlug(),
-                WorkplaceType.HYBRID,
-                ExperienceLevel.Mid,
+                WorkplaceType.map(job.getWorkplaceType()),
+                ExperienceLevel.map(job.getExperienceLevel()),
+                JobSite.JUSTJOINIT,
                 1000f,
                 2000f,
                 job.getPublishedAt(),
