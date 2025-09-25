@@ -50,9 +50,9 @@ public class Offer {
 
     private Instant expiredAt;
 
-//    @JoinColumn(name = "company_id")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Company company;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     public Offer(String guid,
                  String title,

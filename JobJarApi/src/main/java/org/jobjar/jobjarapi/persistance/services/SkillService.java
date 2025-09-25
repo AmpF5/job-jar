@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class SkillService {
     private final static Logger log = LoggerFactory.getLogger(SkillService.class);
     private final SkillRepository skillRepository;
-    private final SkillSnapshotRepository skillSnapshotRepository;
 
     public Tuple<Set<Skill>, Set<String>> getRequiredSkillsAndSnapshots(OfferCreateDto offerCreateDto) {
         var snapshots = new HashSet<String>();
@@ -43,11 +42,4 @@ public class SkillService {
     private String normalizeSkillName(String skillName) {
         return StringNormalizer.removePunctuations(skillName.toLowerCase());
     }
-//
-//    private void handleMissingSkill(String skillName, OfferCreateDto offerCreateDto) {
-//
-//        var skillSnapshot = new SkillSnapshot(skillName);
-//
-////        offerService.offerEventManager.subscribe(offer, new SkillSnapshotListener(skillSnapshot));
-//    }
 }

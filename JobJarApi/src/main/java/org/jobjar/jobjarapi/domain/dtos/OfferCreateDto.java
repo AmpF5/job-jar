@@ -13,6 +13,7 @@ public final class OfferCreateDto {
     private final String guid;
     private final String title;
     private final String slug;
+    private final String companyName;
     private final WorkplaceType workplaceType;
     private final ExperienceLevel experienceLevel;
     private final JobSite jobSite;
@@ -25,7 +26,7 @@ public final class OfferCreateDto {
     public OfferCreateDto(
             String guid,
             String title,
-            String slug,
+            String slug, String companyName,
             WorkplaceType workplaceType,
             ExperienceLevel experienceLevel,
             JobSite jobSite,
@@ -38,6 +39,7 @@ public final class OfferCreateDto {
         this.guid = guid;
         this.title = title;
         this.slug = slug;
+        this.companyName = companyName;
         this.workplaceType = workplaceType;
         this.experienceLevel = experienceLevel;
         this.jobSite = jobSite;

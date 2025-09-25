@@ -21,6 +21,5 @@ public class SkillSnapshotService {
                         .stream()
                         .map(SkillSnapshotMapper::toEntity)
                         .toList());
-
     }
 }

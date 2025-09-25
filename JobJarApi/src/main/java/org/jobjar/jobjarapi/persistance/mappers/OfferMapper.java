@@ -26,15 +26,17 @@ public final class OfferMapper {
     }
 
     public static OfferCreateDto toOfferCreateDto(JustJoinItResponse.JustJoinItJob job) {
+        var employmentType = job.getEmploymentTypes().stream().findFirst().orElse(new JustJoinItResponse.EmploymentType());
         return new OfferCreateDto(
                 job.getGuid(),
                 job.getTitle(),
                 job.getSlug(),
+                job.getCompanyName(),
                 WorkplaceType.map(job.getWorkplaceType()),
                 ExperienceLevel.map(job.getExperienceLevel()),
                 JobSite.JUSTJOINIT,
-                1000f,
-                2000f,
+                employmentType.getFrom(),
+                employmentType.getTo(),
                 job.getPublishedAt(),
                 job.getExpiredAt(),
                 new HashSet<>(job.getRequiredSkills())

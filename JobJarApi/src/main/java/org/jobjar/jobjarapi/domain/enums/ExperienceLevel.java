@@ -14,6 +14,7 @@ public enum ExperienceLevel {
     private static final Set<String> JUNIOR_VARIANTS = Set.of("junior");
     private static final Set<String> MID_VARIANTS = Set.of("mid");
     private static final Set<String> SENIOR_VARIANTS = Set.of("senior");
+    private static final Set<String> CHIEFS_VARIANTS = Set.of("c_level");
     private static final Map<String, ExperienceLevel> LOOKUP;
 
     static {
@@ -21,6 +22,7 @@ public enum ExperienceLevel {
         JUNIOR_VARIANTS.forEach(x -> values.put(x, ExperienceLevel.JUNIOR));
         MID_VARIANTS.forEach(x -> values.put(x, ExperienceLevel.MID));
         SENIOR_VARIANTS.forEach(x -> values.put(x, ExperienceLevel.SENIOR));
+        CHIEFS_VARIANTS.forEach(x -> values.put(x, ExperienceLevel.UNKNOWN));
         LOOKUP = Collections.unmodifiableMap(values);
     }
 

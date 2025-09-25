@@ -11,17 +11,17 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "skill_snapshots")
-public class SkillSnapshot {
+@Table(name = "company_snapshots")
+public class CompanySnapshot {
     @Id
     @UuidGenerator
-    private UUID skillSnapshotId;
+    private UUID companySnapshotId;
 
     private String name;
 
     private Set<UUID> offerIds;
 
-    public SkillSnapshot(String name, Set<UUID> offerIds) {
+    public CompanySnapshot(String name, Set<UUID> offerIds) {
         this.name = name;
         this.offerIds = offerIds;
     }
