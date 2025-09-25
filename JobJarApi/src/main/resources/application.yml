@@ -18,11 +18,16 @@ spring:
 
 logging:
   file:
-    name: logs/main.log
+    name: /log/api.log
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n"
   level:
     root: info
+  logback:
+    rollingpolicy:
+      max-history: 365
+      file-name-pattern: ${LOG_FILE}.%d{yyyy-MM-dd,Europe/Warsaw}.log
+      clean-history-on-start: true
 
 http-clients:
   JUST_JOIN_IT:
