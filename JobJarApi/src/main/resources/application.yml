@@ -38,5 +38,5 @@ http-clients:
       version: v2
       path: user-panel/offers
     params:
-      sortBy: published
+      sortBy: newest
       perPage: 100

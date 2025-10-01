@@ -2,6 +2,7 @@ package org.jobjar.jobjarapi.persistance.services;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jobjar.jobjarapi.domain.dtos.CompanySnapshotCreateDto;
 import org.jobjar.jobjarapi.domain.dtos.OfferCreateDto;
 import org.jobjar.jobjarapi.domain.dtos.SkillSnapshotCreateDto;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OfferService {
@@ -46,8 +48,8 @@ public class OfferService {
             company.ifPresentOrElse(
                     offer::setCompany,
                     () -> companiesSnapshots
-                    .computeIfAbsent(x.getCompanyName(), v -> new HashSet<>())
-                    .add(offer.getOfferId()));
+                            .computeIfAbsent(x.getCompanyName(), v -> new HashSet<>())
+                            .add(offer.getOfferId()));
 
             return offer;
         }).toList());

@@ -1,16 +1,16 @@
 package org.jobjar.jobjarapi.persistance.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jobjar.jobjarapi.domain.dtos.CompanySnapshotCreateDto;
-import org.jobjar.jobjarapi.domain.models.entities.CompanySnapshot;
 import org.jobjar.jobjarapi.persistance.mappers.CompanySnapshotMapper;
 import org.jobjar.jobjarapi.persistance.repositories.CompanySnapshotRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CompanySnapshotService {
     private final CompanySnapshotRepository companySnapshotRepository;
@@ -21,5 +21,6 @@ public class CompanySnapshotService {
                         .stream()
                         .map(CompanySnapshotMapper::toEntity)
                         .toList());
+        log.info("Added {} skill snapshot to the repository", snapshots.size());
     }
 }
