@@ -23,6 +23,11 @@ public class OfferService {
     private final CompanyRepository companyRepository;
     private final CompanySnapshotService companySnapshotService;
 
+    public void handleOffers(List<OfferCreateDto> offers) {
+        var allOffers = offerRepository.findAll();
+
+    }
+
     @Transactional
     public void bulkSaveOffers(List<OfferCreateDto> offers) {
         // TODO: Take off limiter

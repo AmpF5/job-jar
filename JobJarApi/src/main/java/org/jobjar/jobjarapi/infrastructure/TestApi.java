@@ -15,6 +15,6 @@ public class TestApi {
     @GetMapping()
     public void Test() {
         var jjitOffers = justJoinItConnector.getOffers();
-        offerService.bulkSaveOffers(jjitOffers);
+        offerService.handleOffers(jjitOffers);
     }
 }

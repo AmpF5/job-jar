@@ -40,3 +40,14 @@ http-clients:
     params:
       sortBy: newest
       perPage: 100
+  THE_PROTOCOL:
+    headers:
+      cookie: ${THE_PROTOCOL_COOKIE}
+      x-xsrf-token: ${THE_PROTOCOL_XSRF_TOKEN}
+    url:
+      base: apus-api.theprotocol.it
+      path: offers/search
+      params:
+        pageNumber: 1
+        orderby.field: LastRefreshDateUtc
+        pageSize: 50

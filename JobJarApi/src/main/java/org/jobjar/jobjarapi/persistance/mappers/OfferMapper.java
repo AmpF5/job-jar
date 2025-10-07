@@ -34,7 +34,7 @@ public final class OfferMapper {
                 job.getCompanyName(),
                 WorkplaceType.map(job.getWorkplaceType()),
                 ExperienceLevel.map(job.getExperienceLevel()),
-                JobSite.JUSTJOINIT,
+                JobSite.JUST_JOIN_IT,
                 employmentType.getFrom(),
                 employmentType.getTo(),
                 job.getPublishedAt(),

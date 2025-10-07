@@ -37,20 +37,21 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
         mapper.registerModule(new JavaTimeModule());
     }
 
-    @Override
+
+        @Override
     public List<JustJoinItResponse.JustJoinItJob> getRequest() {
         log.info("Getting data from justjoin.it");
         var req = buildRequest(httpClientPropertiesService.getUri());
 
         try {
             var firstResp = httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofString()).get();
-            var firstMappedResp = mapper.readValue(firstResp.body(), JustJoinItResponse.class);
+            var firstRespMapped = mapper.readValue(firstResp.body(), JustJoinItResponse.class);
 
-            var numberOfPages = firstMappedResp.getMeta().getTotalPages();
+            var numberOfPages = firstRespMapped.getMeta().getTotalPages();
             log.info("Number of pages: {}", numberOfPages);
 
             var allResponses = getAllJustJoinItResponses(getAllJustJoinItUris(numberOfPages));
-            allResponses.add(firstMappedResp);
+            allResponses.add(firstRespMapped);
 
             var result = allResponses
                     .stream()
@@ -67,7 +68,7 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
 
     public HttpClient buildHttpClient() {
         return HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_2)
+                .version(HttpClient.Version.HTTP_1_1)
                 .connectTimeout(Duration.ofSeconds(10))
                 .followRedirects(HttpClient.Redirect.ALWAYS)
                 .build();

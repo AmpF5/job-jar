@@ -19,4 +19,10 @@ public class HttpClientPropertiesServiceConfig {
     public HttpClientPropertiesService justJoinItHttpClientPropertiesService() {
         return new HttpClientPropertiesServiceImpl(HttpClientName.JUST_JOIN_IT, config);
     }
+
+    @Bean
+    @Qualifier("theprotocol")
+    public HttpClientPropertiesService theProtocolHttpClientPropertiesService() {
+        return new HttpClientPropertiesServiceImpl(HttpClientName.THE_PROTOCOL, config);
+    }
 }
