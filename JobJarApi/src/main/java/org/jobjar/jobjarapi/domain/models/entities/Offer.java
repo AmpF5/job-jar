@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jobjar.jobjarapi.domain.enums.ExperienceLevel;
 import org.jobjar.jobjarapi.domain.enums.JobSite;
+import org.jobjar.jobjarapi.domain.enums.OfferStatus;
 import org.jobjar.jobjarapi.domain.enums.WorkplaceType;
 
 import java.time.Instant;
@@ -41,6 +42,9 @@ public class Offer {
 
     @Enumerated(EnumType.STRING)
     private JobSite jobSite;
+
+    @Enumerated(EnumType.STRING)
+    private OfferStatus offerStatus;
 
     private Float minimalWage;
 
