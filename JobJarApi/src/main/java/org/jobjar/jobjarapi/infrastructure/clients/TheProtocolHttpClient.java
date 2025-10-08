@@ -3,16 +3,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.jobjar.jobjarapi.domain.models.responses.TheProtocolResponse;
 import org.jobjar.jobjarapi.infrastructure.services.HttpClientPropertiesService;
+import org.jobjar.jobjarapi.utils.TimeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class TheProtocolHttpClient implements BaseHttpClient<TheProtocolResponse.TheProtocolOffer>, BaseHttpClientBuilder {
@@ -29,7 +37,31 @@ public class TheProtocolHttpClient implements BaseHttpClient<TheProtocolResponse
 
     @Override
     public List<TheProtocolResponse.TheProtocolOffer> getRequest() {
-        return List.of();
+        log.info("Getting data from theprotocol.it");
+        var req = buildRequest(httpClientPropertiesService.getUri());
+
+        try  {
+            var firstResp = httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofString()).get();
+            var firstRespMapped = mapper.readValue(firstResp.body(), TheProtocolResponse.class);
+
+            log.info("Number of pages to fetch {}", firstRespMapped.getPage().getSize());
+
+            var allResponses = getAllResponses(getAllUris(firstRespMapped.getPage().getSize()));
+
+            allResponses.add(firstRespMapped);
+
+            var result = allResponses
+                    .stream()
+                    .flatMap(x -> x.getOffers().stream())
+                    .toList();
+
+            log.info("Number of job offers {}", result.size());
+
+            return result;
+        } catch (IOException | InterruptedException | ExecutionException e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -52,5 +84,55 @@ public class TheProtocolHttpClient implements BaseHttpClient<TheProtocolResponse
                 .forEach(req::setHeader);
 
         return req.build();
+    }
+
+    private List<TheProtocolResponse> getAllResponses(List<URI> uris) throws ExecutionException, InterruptedException {
+        var start = System.nanoTime();
+        var requests = uris
+                .stream()
+                .map(this::buildRequest)
+                .toList();
+
+        var future = requests
+                .stream()
+                .map(x -> httpClient
+                        .sendAsync(x, HttpResponse.BodyHandlers.ofString()))
+                .toList();
+
+        var result = CompletableFuture
+                .allOf(future.toArray((new CompletableFuture[0])))
+                .thenApply(x -> future
+                        .stream()
+                        .map(CompletableFuture::join)
+                        .map(y -> {
+                            try {
+                                return mapper.readValue(y.body(), TheProtocolResponse.class);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+                        .collect(Collectors.toList()))
+                .get();
+
+        var end = System.nanoTime();
+        log.info("Fetch data in {} ms", TimeConverter.getElapsedTime(start, end));
+
+        return result;
+    }
+
+    private List<URI> getAllUris(int numberOfPages) {
+        var uriBuilder = UriComponentsBuilder
+                .fromUri(httpClientPropertiesService.getUri());
+
+         return IntStream
+                .iterate(2,x -> x + 1)
+                .limit(numberOfPages)
+                .boxed()
+                .map(x -> {
+                    var uriWithPage = (UriComponentsBuilder) uriBuilder.clone();
+                    uriWithPage.replaceQueryParam("pageNumber", x);
+                    return uriWithPage.build().toUri();
+                })
+                .toList();
     }
 }

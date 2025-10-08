@@ -37,8 +37,7 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
         mapper.registerModule(new JavaTimeModule());
     }
 
-
-        @Override
+    @Override
     public List<JustJoinItResponse.JustJoinItJob> getRequest() {
         log.info("Getting data from justjoin.it");
         var req = buildRequest(httpClientPropertiesService.getUri());
