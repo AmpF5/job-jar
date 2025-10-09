@@ -3,6 +3,7 @@ package org.jobjar.jobjarapi.domain.models.responses;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jobjar.jobjarapi.domain.models.generics.IOfferResponse;
 
 import java.time.Instant;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class JustJoinItResponse {
+public class JustJoinItResponse implements IOfferResponse {
     private List<JustJoinItJob> data;
 
     private JustJoinItMetaData meta;

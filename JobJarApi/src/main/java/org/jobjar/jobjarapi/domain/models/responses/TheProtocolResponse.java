@@ -3,13 +3,14 @@ package org.jobjar.jobjarapi.domain.models.responses;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jobjar.jobjarapi.domain.models.generics.IOfferResponse;
 
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TheProtocolResponse {
+public class TheProtocolResponse implements IOfferResponse {
     private Page page;
     private int offersCount;
     private List<TheProtocolOffer> offers;
