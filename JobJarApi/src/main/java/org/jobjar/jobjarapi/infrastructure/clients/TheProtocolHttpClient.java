@@ -1,8 +1,10 @@
 package org.jobjar.jobjarapi.infrastructure.clients;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.jobjar.jobjarapi.domain.models.responses.TheProtocolResponse;
 import org.jobjar.jobjarapi.infrastructure.services.HttpClientPropertiesService;
+import org.jobjar.jobjarapi.utils.JsonParser;
 import org.jobjar.jobjarapi.utils.TimeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +18,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -38,27 +44,65 @@ public class TheProtocolHttpClient implements BaseHttpClient<TheProtocolResponse
     @Override
     public List<TheProtocolResponse.TheProtocolOffer> getRequest() {
         log.info("Getting data from theprotocol.it");
-        var req = buildRequest(httpClientPropertiesService.getUri());
+
+        var start = System.nanoTime();
+
+        var firstReq = buildRequest(httpClientPropertiesService.getUri());
 
         try  {
-            var firstResp = httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofString()).get();
-            var firstRespMapped = mapper.readValue(firstResp.body(), TheProtocolResponse.class);
+            return httpClient.sendAsync(firstReq, HttpResponse.BodyHandlers.ofString())
+                    .thenApply(firstResp -> {
+                        try {
+                            return mapper.readValue(firstResp.body(), TheProtocolResponse.class);
+                        } catch (JsonProcessingException e) {
+                            log.error("Error while mapping data [{}]", firstResp.statusCode(), e);
+                            throw new CompletionException(e);
+                        }
+                    })
+                    .thenCompose(firstRespMapped -> {
+                        log.info("Number of pages to fetch {}", firstRespMapped.getPage().getSize());
 
-            log.info("Number of pages to fetch {}", firstRespMapped.getPage().getSize());
+                        var uris = getAllUris(firstRespMapped.getPage().getSize());
 
-            var allResponses = getAllResponses(getAllUris(firstRespMapped.getPage().getSize()));
+                        var requests = uris
+                                .stream()
+                                .map(this::buildRequest)
+                                .map(req ->
+                                    httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofString())
+                                            .thenApply(resp ->
+                                                JsonParser.parse(mapper, resp, TheProtocolResponse.class)
+                                            )
+                                )
+                                .collect(Collectors.toList());
 
-            allResponses.add(firstRespMapped);
+                        requests.add(CompletableFuture.completedFuture(firstRespMapped));
 
-            var result = allResponses
-                    .stream()
-                    .flatMap(x -> x.getOffers().stream())
-                    .toList();
+                        return CompletableFuture.allOf(requests.toArray(new CompletableFuture[]{}))
+                                .thenApply(ao -> requests
+                                        .stream()
+                                        .map(CompletableFuture::join)
+                                        .toList());
 
-            log.info("Number of job offers {}", result.size());
+                    })
+                    .thenApply(values -> values
+                            .stream()
+                            .flatMap(offer -> offer.getOffers().stream())
+                            .toList()
+                    )
+                    .orTimeout(20, TimeUnit.SECONDS)
+                    .whenComplete((result, err) -> {
+                        if(err != null) {
+                            var cause =  err.getCause();
+                            log.error("Error while fetching data {}", cause.getMessage(), cause);
+                        } else {
+                            var end = System.nanoTime();
+                            log.info("Successfully fetched data in {} ms", TimeConverter.getElapsedTime(start, end));
+                            log.info("Number of job offers {}", result.size());
+                        }
+                    })
+                    .join();
 
-            return result;
-        } catch (IOException | InterruptedException | ExecutionException e) {
+        } catch (CompletionException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
@@ -84,40 +128,6 @@ public class TheProtocolHttpClient implements BaseHttpClient<TheProtocolResponse
                 .forEach(req::setHeader);
 
         return req.build();
-    }
-
-    private List<TheProtocolResponse> getAllResponses(List<URI> uris) throws ExecutionException, InterruptedException {
-        var start = System.nanoTime();
-        var requests = uris
-                .stream()
-                .map(this::buildRequest)
-                .toList();
-
-        var future = requests
-                .stream()
-                .map(x -> httpClient
-                        .sendAsync(x, HttpResponse.BodyHandlers.ofString()))
-                .toList();
-
-        var result = CompletableFuture
-                .allOf(future.toArray((new CompletableFuture[0])))
-                .thenApply(x -> future
-                        .stream()
-                        .map(CompletableFuture::join)
-                        .map(y -> {
-                            try {
-                                return mapper.readValue(y.body(), TheProtocolResponse.class);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-                        .collect(Collectors.toList()))
-                .get();
-
-        var end = System.nanoTime();
-        log.info("Fetch data in {} ms", TimeConverter.getElapsedTime(start, end));
-
-        return result;
     }
 
     private List<URI> getAllUris(int numberOfPages) {
