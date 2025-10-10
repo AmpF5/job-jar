@@ -1,5 +1,5 @@
 package org.jobjar.jobjarapi.infrastructure.clients;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.jobjar.jobjarapi.domain.models.responses.TheProtocolResponse;
@@ -12,18 +12,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,6 +27,7 @@ import java.util.stream.IntStream;
 @Service
 public class TheProtocolHttpClient implements BaseHttpClient<TheProtocolResponse.TheProtocolOffer>, BaseHttpClientBuilder {
     private final static Logger log = LoggerFactory.getLogger(TheProtocolHttpClient.class);
+    private static final int TIMEOUT_SECONDS = 20;
     private final HttpClientPropertiesService httpClientPropertiesService;
     private final HttpClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -49,16 +46,9 @@ public class TheProtocolHttpClient implements BaseHttpClient<TheProtocolResponse
 
         var firstReq = buildRequest(httpClientPropertiesService.getUri());
 
-        try  {
+        try {
             return httpClient.sendAsync(firstReq, HttpResponse.BodyHandlers.ofString())
-                    .thenApply(firstResp -> {
-                        try {
-                            return mapper.readValue(firstResp.body(), TheProtocolResponse.class);
-                        } catch (JsonProcessingException e) {
-                            log.error("Error while mapping data [{}]", firstResp.statusCode(), e);
-                            throw new CompletionException(e);
-                        }
-                    })
+                    .thenApply(firstResp -> JsonParser.parse(mapper, firstResp, TheProtocolResponse.class))
                     .thenCompose(firstRespMapped -> {
                         log.info("Number of pages to fetch {}", firstRespMapped.getPage().getSize());
 
@@ -67,17 +57,18 @@ public class TheProtocolHttpClient implements BaseHttpClient<TheProtocolResponse
                         var requests = uris
                                 .stream()
                                 .map(this::buildRequest)
-                                .map(req ->
-                                    httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofString())
-                                            .thenApply(resp ->
+                                .map(req -> httpClient
+                                        .sendAsync(req, HttpResponse.BodyHandlers.ofString())
+                                        .thenApply(resp ->
                                                 JsonParser.parse(mapper, resp, TheProtocolResponse.class)
-                                            )
+                                        )
                                 )
                                 .collect(Collectors.toList());
 
                         requests.add(CompletableFuture.completedFuture(firstRespMapped));
 
-                        return CompletableFuture.allOf(requests.toArray(new CompletableFuture[]{}))
+                        return CompletableFuture
+                                .allOf(requests.toArray(new CompletableFuture[]{}))
                                 .thenApply(ao -> requests
                                         .stream()
                                         .map(CompletableFuture::join)
@@ -89,10 +80,10 @@ public class TheProtocolHttpClient implements BaseHttpClient<TheProtocolResponse
                             .flatMap(offer -> offer.getOffers().stream())
                             .toList()
                     )
-                    .orTimeout(20, TimeUnit.SECONDS)
+                    .orTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
                     .whenComplete((result, err) -> {
-                        if(err != null) {
-                            var cause =  err.getCause();
+                        if (err != null) {
+                            var cause = err.getCause();
                             log.error("Error while fetching data {}", cause.getMessage(), cause);
                         } else {
                             var end = System.nanoTime();
@@ -112,7 +103,7 @@ public class TheProtocolHttpClient implements BaseHttpClient<TheProtocolResponse
     public HttpClient buildHttpClient() {
         return HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
-                .connectTimeout(Duration.ofSeconds(10))
+                .connectTimeout(Duration.ofSeconds(TIMEOUT_SECONDS))
                 .followRedirects(HttpClient.Redirect.ALWAYS)
                 .build();
     }
@@ -134,8 +125,8 @@ public class TheProtocolHttpClient implements BaseHttpClient<TheProtocolResponse
         var uriBuilder = UriComponentsBuilder
                 .fromUri(httpClientPropertiesService.getUri());
 
-         return IntStream
-                .iterate(2,x -> x + 1)
+        return IntStream
+                .iterate(2, x -> x + 1)
                 .limit(numberOfPages)
                 .boxed()
                 .map(x -> {

@@ -27,10 +27,10 @@ import java.util.stream.IntStream;
 @Service
 public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.JustJoinItJob>, BaseHttpClientBuilder {
     private final static Logger log = LoggerFactory.getLogger(JustJoinItHttpClient.class);
+    private static final int TIMEOUT_SECONDS = 20;
     private final HttpClientPropertiesService httpClientPropertiesService;
     private final HttpClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();
-    private static final int TIMEOUT_SECONDS = 20;
 
     public JustJoinItHttpClient(@Qualifier("justjoinit") HttpClientPropertiesService httpClientPropertiesService) {
         this.httpClientPropertiesService = httpClientPropertiesService;
@@ -88,7 +88,7 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
                         }
                     })
                     .join();
-        } catch (CompletionException e){
+        } catch (CompletionException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }

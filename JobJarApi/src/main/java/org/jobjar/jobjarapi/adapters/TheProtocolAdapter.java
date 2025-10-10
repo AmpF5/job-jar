@@ -10,8 +10,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TheProtocolAdapter implements BaseAdapter{
+public class TheProtocolAdapter implements BaseAdapter {
     private final BaseHttpClient<TheProtocolResponse.TheProtocolOffer> theProtocolHttpClient;
+
     @Override
     public List<OfferCreateDto> getOffers() {
         var theProtocolJobOffers = theProtocolHttpClient.getRequest();
