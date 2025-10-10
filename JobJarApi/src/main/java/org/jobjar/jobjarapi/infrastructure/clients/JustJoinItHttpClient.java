@@ -1,10 +1,10 @@
 package org.jobjar.jobjarapi.infrastructure.clients;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.jobjar.jobjarapi.domain.models.responses.JustJoinItResponse;
 import org.jobjar.jobjarapi.infrastructure.services.HttpClientPropertiesService;
+import org.jobjar.jobjarapi.utils.JsonParser;
 import org.jobjar.jobjarapi.utils.TimeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -20,7 +19,8 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -30,6 +30,7 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
     private final HttpClientPropertiesService httpClientPropertiesService;
     private final HttpClient httpClient;
     private final ObjectMapper mapper = new ObjectMapper();
+    private static final int TIMEOUT_SECONDS = 20;
 
     public JustJoinItHttpClient(@Qualifier("justjoinit") HttpClientPropertiesService httpClientPropertiesService) {
         this.httpClientPropertiesService = httpClientPropertiesService;
@@ -40,26 +41,54 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
     @Override
     public List<JustJoinItResponse.JustJoinItJob> getRequest() {
         log.info("Getting data from justjoin.it");
+
+        var start = System.nanoTime();
+
         var req = buildRequest(httpClientPropertiesService.getUri());
 
         try {
-            var firstResp = httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofString()).get();
-            var firstRespMapped = mapper.readValue(firstResp.body(), JustJoinItResponse.class);
+            return httpClient.sendAsync(req, HttpResponse.BodyHandlers.ofString())
+                    .thenApply(firstResp -> JsonParser.parse(mapper, firstResp, JustJoinItResponse.class))
+                    .thenCompose(firstRespMapped -> {
+                        log.info("Number of pages to fetch {}", firstRespMapped.getMeta().getTotalPages());
 
-            var numberOfPages = firstRespMapped.getMeta().getTotalPages();
-            log.info("Number of pages: {}", numberOfPages);
+                        var uris = getAllJustJoinItUris(firstRespMapped.getMeta().getTotalPages());
 
-            var allResponses = getAllJustJoinItResponses(getAllJustJoinItUris(numberOfPages));
-            allResponses.add(firstRespMapped);
+                        var requests = uris
+                                .stream()
+                                .map(this::buildRequest)
+                                .map(x -> httpClient
+                                        .sendAsync(x, HttpResponse.BodyHandlers.ofString())
+                                        .thenApply(resp -> JsonParser.parse(mapper, resp, JustJoinItResponse.class))
+                                )
+                                .collect(Collectors.toList());
 
-            var result = allResponses
-                    .stream()
-                    .flatMap(x -> x.getData().stream())
-                    .toList();
-            log.info("Number of job offers: {}.", result.size());
+                        requests.add(CompletableFuture.completedFuture(firstRespMapped));
 
-            return result;
-        } catch (IOException | InterruptedException | ExecutionException e) {
+                        return CompletableFuture
+                                .allOf(requests.toArray(new CompletableFuture[]{}))
+                                .thenApply(ao -> requests
+                                        .stream()
+                                        .map(CompletableFuture::join)
+                                        .toList());
+                    })
+                    .thenApply(values -> values
+                            .stream()
+                            .flatMap(offer -> offer.getData().stream())
+                            .toList())
+                    .orTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                    .whenComplete((result, err) -> {
+                        if (err != null) {
+                            var cause = err.getCause();
+                            log.error("Error while fetching data {}", cause.getMessage(), cause);
+                        } else {
+                            var end = System.nanoTime();
+                            log.info("Successfully fetched data in {} ms", TimeConverter.getElapsedTime(start, end));
+                            log.info("Number of job offers {}", result.size());
+                        }
+                    })
+                    .join();
+        } catch (CompletionException e){
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
@@ -83,42 +112,6 @@ public class JustJoinItHttpClient implements BaseHttpClient<JustJoinItResponse.J
                 .forEach(request::header);
 
         return request.build();
-    }
-
-    private List<JustJoinItResponse> getAllJustJoinItResponses(List<URI> uris) throws InterruptedException, ExecutionException {
-        var start = System.nanoTime();
-        var requests = uris
-                .stream()
-                .map(this::buildRequest)
-                .toList();
-
-        var futureRequests = requests
-                .stream()
-                .map(x -> httpClient
-                        .sendAsync(x, HttpResponse.BodyHandlers.ofString()
-                        )
-                )
-                .toList();
-
-        var result = CompletableFuture
-                .allOf(futureRequests.toArray(new CompletableFuture<?>[0]))
-                .thenApply(x -> futureRequests
-                        .stream()
-                        .map(CompletableFuture::join)
-                        .map(y -> {
-                            try {
-                                return mapper.readValue(y.body(), JustJoinItResponse.class);
-                            } catch (JsonProcessingException e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-                        .collect(Collectors.toList())
-                )
-                .get();
-        var end = System.nanoTime();
-        log.info("Fetch data in {} ms", TimeConverter.getElapsedTime(start, end));
-
-        return result;
     }
 
     private List<URI> getAllJustJoinItUris(int numberOfPages) {
