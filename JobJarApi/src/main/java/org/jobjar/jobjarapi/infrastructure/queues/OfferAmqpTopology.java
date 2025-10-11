@@ -12,9 +12,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @RequiredArgsConstructor
 public class OfferAmqpTopology {
-    public static final String EXCHANGE = "job-offers";
+    public static final String EXCHANGE = "offers";
     public static final String ROUTING_KEY = "collected";
-    public static final String QUEUE = "job-offers.collected";
+    public static final String QUEUE = "offers.collected";
 
     private final RabbitTemplate rabbitTemplate;
 
