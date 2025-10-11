@@ -18,10 +18,21 @@ services:
     volumes:
       - database_postgres:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFUALT_PASS: user
+    ports:
+      - 5672:5672
+      - 15672:15672
 
 volumes:
   database_postgres:
