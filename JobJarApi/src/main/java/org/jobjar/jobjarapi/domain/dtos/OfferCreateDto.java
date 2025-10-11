@@ -1,6 +1,7 @@
 package org.jobjar.jobjarapi.domain.dtos;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.jobjar.jobjarapi.domain.enums.ExperienceLevel;
 import org.jobjar.jobjarapi.domain.enums.JobSite;
 import org.jobjar.jobjarapi.domain.enums.WorkplaceType;
