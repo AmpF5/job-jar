@@ -12,7 +12,7 @@ import java.util.HashSet;
 public final class OfferMapper {
     public static Offer toEntity(OfferCreateDto offerCreateDto) {
         return new Offer(
-                offerCreateDto.getGuid(),
+                offerCreateDto.getExternalId(),
                 offerCreateDto.getTitle(),
                 offerCreateDto.getSlug(),
                 offerCreateDto.getWorkplaceType(),

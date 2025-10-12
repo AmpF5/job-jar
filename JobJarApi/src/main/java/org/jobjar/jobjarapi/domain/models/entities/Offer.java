@@ -9,6 +9,7 @@ import org.jobjar.jobjarapi.domain.enums.OfferStatus;
 import org.jobjar.jobjarapi.domain.enums.WorkplaceType;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -50,9 +51,9 @@ public class Offer {
 
     private Float maximalWage;
 
-    private Instant publishedAt;
+    private Date publishedAt;
 
-    private Instant expiredAt;
+    private Date expiredAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
@@ -65,8 +66,8 @@ public class Offer {
                  ExperienceLevel experienceLevel,
                  Float minimalWage,
                  Float maximalWage,
-                 Instant publishedAt,
-                 Instant expiredAt,
+                 Date publishedAt,
+                 Date expiredAt,
                  JobSite jobSite
     ) {
         this.offerId = UUID.randomUUID();

@@ -1,6 +1,8 @@
 package org.jobjar.jobjarapi.infrastructure.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.jobjar.jobjarapi.infrastructure.queues.OfferAmqpTopology;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -11,6 +13,8 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.TimeZone;
 
 @Configuration
 public class RabbitConnectionConfig {
@@ -36,6 +40,9 @@ public class RabbitConnectionConfig {
 
     MessageConverter messageConverter(ObjectMapper objectMapper) {
         objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true));
+        objectMapper.setTimeZone(TimeZone.getTimeZone("UTC"));
         return new Jackson2JsonMessageConverter(objectMapper);
     }
 }

@@ -7,11 +7,12 @@ import org.jobjar.jobjarapi.domain.enums.JobSite;
 import org.jobjar.jobjarapi.domain.enums.WorkplaceType;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.Set;
 
 @Data
 public final class OfferCreateDto {
-    private final String guid;
+    private final String externalId;
     private final String title;
     private final String slug;
     private final String companyName;
@@ -20,12 +21,12 @@ public final class OfferCreateDto {
     private final JobSite jobSite;
     private final Float minimalWage;
     private final Float maximalWage;
-    private final Instant publishedAt;
-    private final Instant expiredAt;
+    private final Date publishedAt;
+    private final Date expiredAt;
     private Set<String> requiredSkills;
 
     public OfferCreateDto(
-            String guid,
+            String externalId,
             String title,
             String slug, String companyName,
             WorkplaceType workplaceType,
@@ -33,11 +34,11 @@ public final class OfferCreateDto {
             JobSite jobSite,
             Float minimalWage,
             Float maximalWage,
-            Instant publishedAt,
-            Instant expiredAt,
+            Date publishedAt,
+            Date expiredAt,
             Set<String> requiredSkills
     ) {
-        this.guid = guid;
+        this.externalId = externalId;
         this.title = title;
         this.slug = slug;
         this.companyName = companyName;

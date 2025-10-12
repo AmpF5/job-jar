@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.jobjar.jobjarapi.domain.models.generics.IOfferResponse;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -39,8 +40,8 @@ public class JustJoinItResponse implements IOfferResponse {
         private Boolean remoteInterview;
         private String companyName;
         private String companyLogoThumbUrl;
-        private Instant publishedAt;
-        private Instant expiredAt;
+        private Date publishedAt;
+        private Date expiredAt;
         private Boolean openToHireUkrainians;
         private List<Language> languages;
     }
