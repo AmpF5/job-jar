@@ -23,7 +23,7 @@ type Offer struct {
 	company         *Company
 }
 
-func fromOfferJSON(of OfferCreate) *Offer {
+func fromOfferJSON(of OfferJson) *Offer {
 	o := Offer{
 		offerId:         uuid.UUID{},
 		externalId:      of.ExternalId,

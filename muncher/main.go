@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/AmpF5/job-jar/models"
 	"github.com/streadway/amqp"
 )
 
@@ -38,14 +39,13 @@ func main() {
 
 	go func() {
 		for d := range data {
-			var offerCreate OfferCreate
-			print(d.Body)
-			err := json.Unmarshal(d.Body, &offerCreate)
+			var jsonOffers []models.OfferJson
+			err := json.Unmarshal(d.Body, &jsonOffers)
 			if err != nil {
 				fmt.Println(err)
 			}
 
-			fmt.Println(offerCreate)
+			fmt.Println(jsonOffers)
 		}
 	}()
 
