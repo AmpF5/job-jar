@@ -12,10 +12,10 @@ spring:
 #    dynamic: false
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: Fwj85+7j#N)=
-    name: postgres
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    name: ${DB_NAME}
     driver-class-name: org.postgresql.Driver
 
   jpa:

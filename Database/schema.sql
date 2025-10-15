@@ -1,7 +1,5 @@
 BEGIN;
 
-CREATE SCHEMA IF NOT EXISTS "Main";
-
 CREATE TABLE skills (
     skill_id uuid PRIMARY KEY,
     name character varying(255) NOT NULL,
