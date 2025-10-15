@@ -1,17 +1,20 @@
 services:
   postgres:
+    build:
+      context: ../Database
+      dockerfile: Dockerfile-Database
     image: postgres
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Fwj85+7j#N)=
+      POSTGRES_PASSWORD: Fwj85+7jN)=
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
     volumes:
       - database_postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
