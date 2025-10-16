@@ -5,6 +5,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 JobJarApi/.env
+*/.env
 
 ### STS ###
 .apt_generated

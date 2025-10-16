@@ -12,12 +12,30 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const insertOffer = `-- name: InsertOffer :exec
-INSERT INTO offers(offer_id, external_id, title, job_site, experience_level, workplace_type, offer_status, company_id, minimal_wage, maximal_wage, slug, expired_at, published_at)
-VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+type CreatSkilSnapshotsParams struct {
+	SkillSnapshotID uuid.UUID
+	Name            string
+	OfferIds        []uuid.UUID
+}
+
+const createCompanySnapshot = `-- name: CreateCompanySnapshot :exec
+INSERT INTO company_snapshots(company_snapshot_id, name, offer_ids)
+VALUES($1, $2, $3)
 `
 
-type InsertOfferParams struct {
+type CreateCompanySnapshotParams struct {
+	CompanySnapshotID uuid.UUID
+	Name              string
+	OfferIds          []uuid.UUID
+}
+
+// :::: COMPANY ::::
+func (q *Queries) CreateCompanySnapshot(ctx context.Context, arg CreateCompanySnapshotParams) error {
+	_, err := q.db.Exec(ctx, createCompanySnapshot, arg.CompanySnapshotID, arg.Name, arg.OfferIds)
+	return err
+}
+
+type CreateOfferParams struct {
 	OfferID         uuid.UUID
 	ExternalID      uuid.UUID
 	Title           string
@@ -33,21 +51,57 @@ type InsertOfferParams struct {
 	PublishedAt     pgtype.Timestamptz
 }
 
-func (q *Queries) InsertOffer(ctx context.Context, arg InsertOfferParams) error {
-	_, err := q.db.Exec(ctx, insertOffer,
-		arg.OfferID,
-		arg.ExternalID,
-		arg.Title,
-		arg.JobSite,
-		arg.ExperienceLevel,
-		arg.WorkplaceType,
-		arg.OfferStatus,
-		arg.CompanyID,
-		arg.MinimalWage,
-		arg.MaximalWage,
-		arg.Slug,
-		arg.ExpiredAt,
-		arg.PublishedAt,
-	)
+const createSkillSnapshot = `-- name: CreateSkillSnapshot :exec
+INSERT INTO skill_snapshots(skill_snapshot_id, name, offer_ids)
+VALUES($1, $2, $3)
+`
+
+type CreateSkillSnapshotParams struct {
+	SkillSnapshotID uuid.UUID
+	Name            string
+	OfferIds        []uuid.UUID
+}
+
+// :::: SKILL ::::
+func (q *Queries) CreateSkillSnapshot(ctx context.Context, arg CreateSkillSnapshotParams) error {
+	_, err := q.db.Exec(ctx, createSkillSnapshot, arg.SkillSnapshotID, arg.Name, arg.OfferIds)
 	return err
+}
+
+const getByVariant = `-- name: GetByVariant :one
+SELECT skill_id, name, variants FROM skills
+WHERE ($1 = ANY (variants)) LIMIT 1
+`
+
+func (q *Queries) GetByVariant(ctx context.Context, variants []string) (Skill, error) {
+	row := q.db.QueryRow(ctx, getByVariant, variants)
+	var i Skill
+	err := row.Scan(&i.SkillID, &i.Name, &i.Variants)
+	return i, err
+}
+
+const getByVariants = `-- name: GetByVariants :many
+SELECT skill_id, name, variants FROM skills
+WHERE variants @> ARRAY[$1]
+`
+
+// SELECT * FROM skills WHERE($1 = ANY (variants));
+func (q *Queries) GetByVariants(ctx context.Context, variants []string) ([]Skill, error) {
+	rows, err := q.db.Query(ctx, getByVariants, variants)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Skill
+	for rows.Next() {
+		var i Skill
+		if err := rows.Scan(&i.SkillID, &i.Name, &i.Variants); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

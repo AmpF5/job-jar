@@ -24,8 +24,8 @@ type OfferJson struct {
 	RequiredSkills  []string  `json:"requiredSkills"`
 }
 
-func (oj OfferJson) to() repository.Offer {
-	return repository.Offer{
+func (oj *OfferJson) ToOfferParams() *repository.CreateOfferParams {
+	return &repository.CreateOfferParams{
 		OfferID:         uuid.New(),
 		ExternalID:      oj.ExternalId,
 		Title:           oj.Title,

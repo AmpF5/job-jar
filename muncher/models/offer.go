@@ -22,24 +22,3 @@ type Offer struct {
 	expiredAt       time.Time
 	company         *Company
 }
-
-func fromOfferJSON(of OfferJson) *Offer {
-	o := Offer{
-		offerId:         uuid.UUID{},
-		externalId:      of.ExternalId,
-		title:           of.Title,
-		slug:            of.Slug,
-		requiredSkills:  []Skill{},
-		workplaceType:   of.WorkplaceType,
-		experienceLevel: of.ExperienceLevel,
-		jobSite:         of.JobSite,
-		offerStatus:     of.OfferStatus,
-		minimalWage:     of.MinimalWage,
-		maximalWage:     of.MaximalWage,
-		publishedAt:     of.PublishedAt,
-		expiredAt:       of.ExpiredAt,
-		company:         &Company{},
-	}
-
-	return &o
-}
