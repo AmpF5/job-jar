@@ -6,6 +6,8 @@ CREATE TABLE skills (
     variants text[]
 );
 
+CREATE INDEX ON skills USING GIN(variants);
+
 CREATE TABLE skill_snapshots (
     skill_snapshot_id uuid PRIMARY KEY,
     name character varying(255) NOT NULL,
@@ -31,7 +33,7 @@ CREATE TABLE offers (
     experience_level character varying(255) NOT NULL,
     workplace_type character varying(255) NOT NULL,
     offer_status character varying(255) NOT NULL,
-    company_id uuid NOT NULL,
+    company_id uuid NULL,
     minimal_wage real NOT NULL,
     maximal_wage real NOT NULL,
     slug character varying(255) NOT NULL,
