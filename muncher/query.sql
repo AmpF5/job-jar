@@ -38,3 +38,21 @@ WHERE variants @> ARRAY[$1];
 -- name: CreateCompanySnapshot :exec
 INSERT INTO company_snapshots(company_snapshot_id, name, offer_ids)
 VALUES($1, $2, $3);
+
+-- name: GetCompanySnapshotByName :one
+SELECT * FROM company_snapshots
+WHERE name = $1 LIMIT 1;
+
+-- name: UpdateCompanySnapshot :exec
+UPDATE company_snapshots
+SET offer_ids = $2
+WHERE company_snapshot_id = $1;
+
+-- :::: COMPANY :::: 
+-- name: CreateCompany :exec
+INSERT INTO companies(company_id, name)
+VALUES($1, $2);
+
+-- name: GetCompanyByName :one
+SELECT * FROM companies
+WHERE name = $1 LIMIT 1;

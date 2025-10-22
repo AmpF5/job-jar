@@ -87,7 +87,6 @@ func main() {
 					} else {
 						ssToAdd[rs] = []uuid.UUID{o.OfferID}
 					}
-
 				}
 
 				// Append company from offer as a company_snapshot
@@ -100,7 +99,6 @@ func main() {
 			}
 
 			// Handle skill_snapshot
-			fmt.Println(ssToAdd)
 			for name, oIDs := range ssToAdd {
 				skillSnapshot, err := dbquery.GetByName(ctx, name)
 				if err != nil {
@@ -123,17 +121,40 @@ func main() {
 						fmt.Println("Failed to update skill_snapshot offers")
 						fmt.Println(err)
 					}
-
-					continue
 				}
 
-				// TODO
+				// TODO add handling skills
 				// _, err := dbquery.GetByVariant(ctx, name)
 				// if err != nil && err != pgx.ErrNoRows {
 				// 	fmt.Println("Skill not found in skills")
 				// 	fmt.Println(err)
 				// } else {
 				// }
+			}
+
+			// Handle company_snapshot
+			for name, oIDs := range csToAdd {
+				companySnapshot, err := dbquery.GetCompanySnapshotByName(ctx, name)
+				if err != nil {
+					fmt.Printf("Company_snapshot not found %s\n", name)
+					dbquery.CreateCompanySnapshot(ctx, repository.CreateCompanySnapshotParams{
+						CompanySnapshotID: uuid.New(),
+						Name:              name,
+						OfferIds:          oIDs,
+					})
+				} else {
+					updateC := repository.UpdateCompanySnapshotParams{
+						CompanySnapshotID: companySnapshot.CompanySnapshotID,
+						OfferIds:          append(oIDs, companySnapshot.OfferIds...),
+					}
+					err := dbquery.UpdateCompanySnapshot(ctx, updateC)
+					if err != nil {
+						fmt.Println("Failed to update company_snapshot offers")
+						fmt.Println(err)
+					}
+				}
+
+				// TODO add handling companies
 			}
 
 			n, err := dbquery.CreateOffer(ctx, oToAdd)

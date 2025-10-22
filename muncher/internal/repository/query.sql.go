@@ -12,6 +12,22 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const createCompany = `-- name: CreateCompany :exec
+INSERT INTO companies(company_id, name)
+VALUES($1, $2)
+`
+
+type CreateCompanyParams struct {
+	CompanyID uuid.UUID
+	Name      string
+}
+
+// :::: COMPANY ::::
+func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) error {
+	_, err := q.db.Exec(ctx, createCompany, arg.CompanyID, arg.Name)
+	return err
+}
+
 const createCompanySnapshot = `-- name: CreateCompanySnapshot :exec
 INSERT INTO company_snapshots(company_snapshot_id, name, offer_ids)
 VALUES($1, $2, $3)
@@ -141,6 +157,46 @@ func (q *Queries) GetByVariants(ctx context.Context, variants []string) ([]Skill
 		return nil, err
 	}
 	return items, nil
+}
+
+const getCompanyByName = `-- name: GetCompanyByName :one
+SELECT company_id, name FROM companies
+WHERE name = $1 LIMIT 1
+`
+
+func (q *Queries) GetCompanyByName(ctx context.Context, name string) (Company, error) {
+	row := q.db.QueryRow(ctx, getCompanyByName, name)
+	var i Company
+	err := row.Scan(&i.CompanyID, &i.Name)
+	return i, err
+}
+
+const getCompanySnapshotByName = `-- name: GetCompanySnapshotByName :one
+SELECT company_snapshot_id, name, offer_ids FROM company_snapshots
+WHERE name = $1 LIMIT 1
+`
+
+func (q *Queries) GetCompanySnapshotByName(ctx context.Context, name string) (CompanySnapshot, error) {
+	row := q.db.QueryRow(ctx, getCompanySnapshotByName, name)
+	var i CompanySnapshot
+	err := row.Scan(&i.CompanySnapshotID, &i.Name, &i.OfferIds)
+	return i, err
+}
+
+const updateCompanySnapshot = `-- name: UpdateCompanySnapshot :exec
+UPDATE company_snapshots
+SET offer_ids = $2
+WHERE company_snapshot_id = $1
+`
+
+type UpdateCompanySnapshotParams struct {
+	CompanySnapshotID uuid.UUID
+	OfferIds          []uuid.UUID
+}
+
+func (q *Queries) UpdateCompanySnapshot(ctx context.Context, arg UpdateCompanySnapshotParams) error {
+	_, err := q.db.Exec(ctx, updateCompanySnapshot, arg.CompanySnapshotID, arg.OfferIds)
+	return err
 }
 
 const updateSkillSnapshot = `-- name: UpdateSkillSnapshot :exec
