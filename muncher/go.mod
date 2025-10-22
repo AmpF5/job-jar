@@ -7,6 +7,13 @@ require github.com/streadway/amqp v1.1.0
 require (
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.6
+	github.com/natefinch/lumberjack v2.0.0+incompatible
+)
+
+require (
+	github.com/BurntSushi/toml v1.5.0 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 require (

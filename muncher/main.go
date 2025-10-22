@@ -3,7 +3,8 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"io"
+	"log"
 	"os"
 
 	"github.com/AmpF5/job-jar/internal/repository"
@@ -11,28 +12,44 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
+	"github.com/natefinch/lumberjack"
 	"github.com/streadway/amqp"
 )
 
+var (
+	InfoLogger  *log.Logger
+	ErrorLogger *log.Logger
+)
+
 func main() {
-	fmt.Println("Muncher is munching...")
+	logger := &lumberjack.Logger{
+		Filename:   "./logs/app.log",
+		MaxSize:    10,
+		MaxBackups: 7,
+		MaxAge:     1,
+		Compress:   true,
+	}
+	multiOut := io.MultiWriter(os.Stdout, logger)
+
+	InfoLogger = log.New(multiOut, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	ErrorLogger = log.New(multiOut, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+
+	InfoLogger.Println("Muncher is munching...")
+
 	if err := godotenv.Load(); err != nil {
-		fmt.Println(err)
-		panic(err)
+		ErrorLogger.Fatal(err)
 	}
 
 	conn, err := amqp.Dial(os.Getenv("RMQ_CONNECTION_STRING"))
 	if err != nil {
-		fmt.Println(err)
-		panic(err)
+		ErrorLogger.Fatal(err)
 	}
 
 	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		fmt.Println(err)
-		panic(err)
+		ErrorLogger.Fatal(err)
 	}
 
 	defer ch.Close()
@@ -53,8 +70,7 @@ func main() {
 
 	dbconn, err := pgx.Connect(ctx, os.Getenv("DB_CONNECTION_STRING"))
 	if err != nil {
-		fmt.Println(err)
-		panic(err)
+		ErrorLogger.Fatal(err)
 	}
 	defer dbconn.Close(ctx)
 
@@ -65,10 +81,8 @@ func main() {
 			var jsonOffers []models.OfferJson
 			err := json.Unmarshal(d.Body, &jsonOffers)
 			if err != nil {
-				fmt.Println(err)
+				ErrorLogger.Println(err)
 			}
-
-			fmt.Println(jsonOffers)
 
 			ssToAdd := map[string][]uuid.UUID{}
 			csToAdd := map[string][]uuid.UUID{}
@@ -102,7 +116,7 @@ func main() {
 			for name, oIDs := range ssToAdd {
 				skillSnapshot, err := dbquery.GetSkillSnapshotByName(ctx, name)
 				if err != nil {
-					fmt.Printf("Skill_snapshot not found %s\n", name)
+					InfoLogger.Printf("Skill_snapshot not found %s\n", name)
 					// TEMP
 					dbquery.CreateSkillSnapshot(ctx, repository.CreateSkillSnapshotParams{
 						SkillSnapshotID: uuid.New(),
@@ -110,7 +124,7 @@ func main() {
 						OfferIds:        oIDs,
 					})
 				} else {
-					fmt.Println(err)
+					ErrorLogger.Println(err)
 					// If skill_snapshot exists, update offers_ids
 					updateSS := repository.UpdateSkillSnapshotParams{
 						SkillSnapshotID: skillSnapshot.SkillSnapshotID,
@@ -118,8 +132,7 @@ func main() {
 					}
 					err := dbquery.UpdateSkillSnapshot(ctx, updateSS)
 					if err != nil {
-						fmt.Println("Failed to update skill_snapshot offers")
-						fmt.Println(err)
+						ErrorLogger.Println(err)
 					}
 				}
 
@@ -136,7 +149,7 @@ func main() {
 			for name, oIDs := range csToAdd {
 				companySnapshot, err := dbquery.GetCompanySnapshotByName(ctx, name)
 				if err != nil {
-					fmt.Printf("Company_snapshot not found %s\n", name)
+					InfoLogger.Printf("Company_snapshot not found %s\n", name)
 					dbquery.CreateCompanySnapshot(ctx, repository.CreateCompanySnapshotParams{
 						CompanySnapshotID: uuid.New(),
 						Name:              name,
@@ -149,8 +162,7 @@ func main() {
 					}
 					err := dbquery.UpdateCompanySnapshot(ctx, updateC)
 					if err != nil {
-						fmt.Println("Failed to update company_snapshot offers")
-						fmt.Println(err)
+						ErrorLogger.Println(err)
 					}
 				}
 
@@ -158,9 +170,9 @@ func main() {
 			}
 
 			n, err := dbquery.CreateOffer(ctx, oToAdd)
-			fmt.Println(n)
+			InfoLogger.Printf("Inserted %d offers\n", n)
 			if err != nil {
-				fmt.Println(err)
+				ErrorLogger.Println(err)
 			}
 
 		}
