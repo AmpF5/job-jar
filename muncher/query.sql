@@ -12,7 +12,7 @@ VALUES($1, $2, $3);
 INSERT INTO skill_snapshots(skill_snapshot_id, name, offer_ids)
 VALUES($1, $2, $3);
 
--- name: GetByNames :many
+-- name: GetSkillSnapshotsByNames :many
 SELECT * FROM skill_snapshots
 WHERE (name = ANY (@names::text[]));
 
@@ -21,16 +21,16 @@ UPDATE skill_snapshots
 SET offer_ids = $2
 WHERE skill_snapshot_id = $1;
 
--- name: GetByName :one
+-- name: GetSkillSnapshotByName :one
 SELECT * FROM skill_snapshots
 WHERE name = $1 LIMIT 1;
 
 -- :::: SKILLS ::::
--- name: GetByVariant :one
+-- name: GetSkillByVariant :one
 SELECT * FROM skills
 WHERE (sqlc.arg('variant')::text = ANY (variants)) LIMIT 1;
 
--- name: GetByVariants :many
+-- name: GetSkillByVariants :many
 SELECT * FROM skills
 WHERE variants @> ARRAY[$1];
 

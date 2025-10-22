@@ -84,81 +84,6 @@ type CreateSkillSnapshotsParams struct {
 	OfferIds        []uuid.UUID
 }
 
-const getByName = `-- name: GetByName :one
-SELECT skill_snapshot_id, name, offer_ids FROM skill_snapshots
-WHERE name = $1 LIMIT 1
-`
-
-func (q *Queries) GetByName(ctx context.Context, name string) (SkillSnapshot, error) {
-	row := q.db.QueryRow(ctx, getByName, name)
-	var i SkillSnapshot
-	err := row.Scan(&i.SkillSnapshotID, &i.Name, &i.OfferIds)
-	return i, err
-}
-
-const getByNames = `-- name: GetByNames :many
-SELECT skill_snapshot_id, name, offer_ids FROM skill_snapshots
-WHERE (name = ANY ($1::text[]))
-`
-
-func (q *Queries) GetByNames(ctx context.Context, names []string) ([]SkillSnapshot, error) {
-	rows, err := q.db.Query(ctx, getByNames, names)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []SkillSnapshot
-	for rows.Next() {
-		var i SkillSnapshot
-		if err := rows.Scan(&i.SkillSnapshotID, &i.Name, &i.OfferIds); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getByVariant = `-- name: GetByVariant :one
-SELECT skill_id, name, variants FROM skills
-WHERE ($1::text = ANY (variants)) LIMIT 1
-`
-
-// :::: SKILLS ::::
-func (q *Queries) GetByVariant(ctx context.Context, variant string) (Skill, error) {
-	row := q.db.QueryRow(ctx, getByVariant, variant)
-	var i Skill
-	err := row.Scan(&i.SkillID, &i.Name, &i.Variants)
-	return i, err
-}
-
-const getByVariants = `-- name: GetByVariants :many
-SELECT skill_id, name, variants FROM skills
-WHERE variants @> ARRAY[$1]
-`
-
-func (q *Queries) GetByVariants(ctx context.Context, variants []string) ([]Skill, error) {
-	rows, err := q.db.Query(ctx, getByVariants, variants)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Skill
-	for rows.Next() {
-		var i Skill
-		if err := rows.Scan(&i.SkillID, &i.Name, &i.Variants); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const getCompanyByName = `-- name: GetCompanyByName :one
 SELECT company_id, name FROM companies
 WHERE name = $1 LIMIT 1
@@ -181,6 +106,81 @@ func (q *Queries) GetCompanySnapshotByName(ctx context.Context, name string) (Co
 	var i CompanySnapshot
 	err := row.Scan(&i.CompanySnapshotID, &i.Name, &i.OfferIds)
 	return i, err
+}
+
+const getSkillByVariant = `-- name: GetSkillByVariant :one
+SELECT skill_id, name, variants FROM skills
+WHERE ($1::text = ANY (variants)) LIMIT 1
+`
+
+// :::: SKILLS ::::
+func (q *Queries) GetSkillByVariant(ctx context.Context, variant string) (Skill, error) {
+	row := q.db.QueryRow(ctx, getSkillByVariant, variant)
+	var i Skill
+	err := row.Scan(&i.SkillID, &i.Name, &i.Variants)
+	return i, err
+}
+
+const getSkillByVariants = `-- name: GetSkillByVariants :many
+SELECT skill_id, name, variants FROM skills
+WHERE variants @> ARRAY[$1]
+`
+
+func (q *Queries) GetSkillByVariants(ctx context.Context, variants []string) ([]Skill, error) {
+	rows, err := q.db.Query(ctx, getSkillByVariants, variants)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Skill
+	for rows.Next() {
+		var i Skill
+		if err := rows.Scan(&i.SkillID, &i.Name, &i.Variants); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getSkillSnapshotByName = `-- name: GetSkillSnapshotByName :one
+SELECT skill_snapshot_id, name, offer_ids FROM skill_snapshots
+WHERE name = $1 LIMIT 1
+`
+
+func (q *Queries) GetSkillSnapshotByName(ctx context.Context, name string) (SkillSnapshot, error) {
+	row := q.db.QueryRow(ctx, getSkillSnapshotByName, name)
+	var i SkillSnapshot
+	err := row.Scan(&i.SkillSnapshotID, &i.Name, &i.OfferIds)
+	return i, err
+}
+
+const getSkillSnapshotsByNames = `-- name: GetSkillSnapshotsByNames :many
+SELECT skill_snapshot_id, name, offer_ids FROM skill_snapshots
+WHERE (name = ANY ($1::text[]))
+`
+
+func (q *Queries) GetSkillSnapshotsByNames(ctx context.Context, names []string) ([]SkillSnapshot, error) {
+	rows, err := q.db.Query(ctx, getSkillSnapshotsByNames, names)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SkillSnapshot
+	for rows.Next() {
+		var i SkillSnapshot
+		if err := rows.Scan(&i.SkillSnapshotID, &i.Name, &i.OfferIds); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const updateCompanySnapshot = `-- name: UpdateCompanySnapshot :exec

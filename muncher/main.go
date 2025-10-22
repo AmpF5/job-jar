@@ -100,7 +100,7 @@ func main() {
 
 			// Handle skill_snapshot
 			for name, oIDs := range ssToAdd {
-				skillSnapshot, err := dbquery.GetByName(ctx, name)
+				skillSnapshot, err := dbquery.GetSkillSnapshotByName(ctx, name)
 				if err != nil {
 					fmt.Printf("Skill_snapshot not found %s\n", name)
 					// TEMP
