@@ -29,7 +29,7 @@ type CreateCompanySnapshotParams struct {
 	OfferIds          []uuid.UUID
 }
 
-// :::: COMPANY ::::
+// :::: COMPANY_SNAPSHOTS::::
 func (q *Queries) CreateCompanySnapshot(ctx context.Context, arg CreateCompanySnapshotParams) error {
 	_, err := q.db.Exec(ctx, createCompanySnapshot, arg.CompanySnapshotID, arg.Name, arg.OfferIds)
 	return err
@@ -62,10 +62,35 @@ type CreateSkillSnapshotParams struct {
 	OfferIds        []uuid.UUID
 }
 
-// :::: SKILL ::::
+// :::: SKILL_SNAPSHOTS ::::
 func (q *Queries) CreateSkillSnapshot(ctx context.Context, arg CreateSkillSnapshotParams) error {
 	_, err := q.db.Exec(ctx, createSkillSnapshot, arg.SkillSnapshotID, arg.Name, arg.OfferIds)
 	return err
+}
+
+const getByName = `-- name: GetByName :many
+SELECT skill_snapshot_id, name, offer_ids FROM skill_snapshots
+WHERE (name = ANY ($1::text[]))
+`
+
+func (q *Queries) GetByName(ctx context.Context, names []string) ([]SkillSnapshot, error) {
+	rows, err := q.db.Query(ctx, getByName, names)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SkillSnapshot
+	for rows.Next() {
+		var i SkillSnapshot
+		if err := rows.Scan(&i.SkillSnapshotID, &i.Name, &i.OfferIds); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getByVariant = `-- name: GetByVariant :one
@@ -73,6 +98,7 @@ SELECT skill_id, name, variants FROM skills
 WHERE ($1 = ANY (variants)) LIMIT 1
 `
 
+// :::: SKILLS ::::
 func (q *Queries) GetByVariant(ctx context.Context, variants []string) (Skill, error) {
 	row := q.db.QueryRow(ctx, getByVariant, variants)
 	var i Skill
