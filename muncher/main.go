@@ -90,7 +90,7 @@ func main() {
 
 				}
 
-				// Append company as a company_snapshot
+				// Append company from offer as a company_snapshot
 				_, ok := csToAdd[jo.CompanyName]
 				if ok {
 					csToAdd[jo.CompanyName] = append(csToAdd[jo.CompanyName], o.OfferID)
@@ -99,11 +99,49 @@ func main() {
 				}
 			}
 
-			x, err := dbquery.CreateOffer(ctx, oToAdd)
-			fmt.Println(x)
+			// Handle skill_snapshot
+			fmt.Println(ssToAdd)
+			for name, oIDs := range ssToAdd {
+				skillSnapshot, err := dbquery.GetByName(ctx, name)
+				if err != nil {
+					fmt.Printf("Skill_snapshot not found %s\n", name)
+					// TEMP
+					dbquery.CreateSkillSnapshot(ctx, repository.CreateSkillSnapshotParams{
+						SkillSnapshotID: uuid.New(),
+						Name:            name,
+						OfferIds:        oIDs,
+					})
+				} else {
+					fmt.Println(err)
+					// If skill_snapshot exists, update offers_ids
+					updateSS := repository.UpdateSkillSnapshotParams{
+						SkillSnapshotID: skillSnapshot.SkillSnapshotID,
+						OfferIds:        append(oIDs, skillSnapshot.OfferIds...),
+					}
+					err := dbquery.UpdateSkillSnapshot(ctx, updateSS)
+					if err != nil {
+						fmt.Println("Failed to update skill_snapshot offers")
+						fmt.Println(err)
+					}
+
+					continue
+				}
+
+				// TODO
+				// _, err := dbquery.GetByVariant(ctx, name)
+				// if err != nil && err != pgx.ErrNoRows {
+				// 	fmt.Println("Skill not found in skills")
+				// 	fmt.Println(err)
+				// } else {
+				// }
+			}
+
+			n, err := dbquery.CreateOffer(ctx, oToAdd)
+			fmt.Println(n)
 			if err != nil {
 				fmt.Println(err)
 			}
+
 		}
 	}()
 

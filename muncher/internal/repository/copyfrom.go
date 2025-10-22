@@ -9,40 +9,6 @@ import (
 	"context"
 )
 
-// iteratorForCreatSkilSnapshots implements pgx.CopyFromSource.
-type iteratorForCreatSkilSnapshots struct {
-	rows                 []CreatSkilSnapshotsParams
-	skippedFirstNextCall bool
-}
-
-func (r *iteratorForCreatSkilSnapshots) Next() bool {
-	if len(r.rows) == 0 {
-		return false
-	}
-	if !r.skippedFirstNextCall {
-		r.skippedFirstNextCall = true
-		return true
-	}
-	r.rows = r.rows[1:]
-	return len(r.rows) > 0
-}
-
-func (r iteratorForCreatSkilSnapshots) Values() ([]interface{}, error) {
-	return []interface{}{
-		r.rows[0].SkillSnapshotID,
-		r.rows[0].Name,
-		r.rows[0].OfferIds,
-	}, nil
-}
-
-func (r iteratorForCreatSkilSnapshots) Err() error {
-	return nil
-}
-
-func (q *Queries) CreatSkilSnapshots(ctx context.Context, arg []CreatSkilSnapshotsParams) (int64, error) {
-	return q.db.CopyFrom(ctx, []string{"skill_snapshots"}, []string{"skill_snapshot_id", "name", "offer_ids"}, &iteratorForCreatSkilSnapshots{rows: arg})
-}
-
 // iteratorForCreateOffer implements pgx.CopyFromSource.
 type iteratorForCreateOffer struct {
 	rows                 []CreateOfferParams
@@ -86,4 +52,38 @@ func (r iteratorForCreateOffer) Err() error {
 // :::: OFFER ::::
 func (q *Queries) CreateOffer(ctx context.Context, arg []CreateOfferParams) (int64, error) {
 	return q.db.CopyFrom(ctx, []string{"offers"}, []string{"offer_id", "external_id", "title", "job_site", "experience_level", "workplace_type", "offer_status", "company_id", "minimal_wage", "maximal_wage", "slug", "expired_at", "published_at"}, &iteratorForCreateOffer{rows: arg})
+}
+
+// iteratorForCreateSkillSnapshots implements pgx.CopyFromSource.
+type iteratorForCreateSkillSnapshots struct {
+	rows                 []CreateSkillSnapshotsParams
+	skippedFirstNextCall bool
+}
+
+func (r *iteratorForCreateSkillSnapshots) Next() bool {
+	if len(r.rows) == 0 {
+		return false
+	}
+	if !r.skippedFirstNextCall {
+		r.skippedFirstNextCall = true
+		return true
+	}
+	r.rows = r.rows[1:]
+	return len(r.rows) > 0
+}
+
+func (r iteratorForCreateSkillSnapshots) Values() ([]interface{}, error) {
+	return []interface{}{
+		r.rows[0].SkillSnapshotID,
+		r.rows[0].Name,
+		r.rows[0].OfferIds,
+	}, nil
+}
+
+func (r iteratorForCreateSkillSnapshots) Err() error {
+	return nil
+}
+
+func (q *Queries) CreateSkillSnapshots(ctx context.Context, arg []CreateSkillSnapshotsParams) (int64, error) {
+	return q.db.CopyFrom(ctx, []string{"skill_snapshots"}, []string{"skill_snapshot_id", "name", "offer_ids"}, &iteratorForCreateSkillSnapshots{rows: arg})
 }

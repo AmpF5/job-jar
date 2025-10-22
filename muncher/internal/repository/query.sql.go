@@ -12,12 +12,6 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type CreatSkilSnapshotsParams struct {
-	SkillSnapshotID uuid.UUID
-	Name            string
-	OfferIds        []uuid.UUID
-}
-
 const createCompanySnapshot = `-- name: CreateCompanySnapshot :exec
 INSERT INTO company_snapshots(company_snapshot_id, name, offer_ids)
 VALUES($1, $2, $3)
@@ -68,13 +62,31 @@ func (q *Queries) CreateSkillSnapshot(ctx context.Context, arg CreateSkillSnapsh
 	return err
 }
 
-const getByName = `-- name: GetByName :many
+type CreateSkillSnapshotsParams struct {
+	SkillSnapshotID uuid.UUID
+	Name            string
+	OfferIds        []uuid.UUID
+}
+
+const getByName = `-- name: GetByName :one
+SELECT skill_snapshot_id, name, offer_ids FROM skill_snapshots
+WHERE name = $1 LIMIT 1
+`
+
+func (q *Queries) GetByName(ctx context.Context, name string) (SkillSnapshot, error) {
+	row := q.db.QueryRow(ctx, getByName, name)
+	var i SkillSnapshot
+	err := row.Scan(&i.SkillSnapshotID, &i.Name, &i.OfferIds)
+	return i, err
+}
+
+const getByNames = `-- name: GetByNames :many
 SELECT skill_snapshot_id, name, offer_ids FROM skill_snapshots
 WHERE (name = ANY ($1::text[]))
 `
 
-func (q *Queries) GetByName(ctx context.Context, names []string) ([]SkillSnapshot, error) {
-	rows, err := q.db.Query(ctx, getByName, names)
+func (q *Queries) GetByNames(ctx context.Context, names []string) ([]SkillSnapshot, error) {
+	rows, err := q.db.Query(ctx, getByNames, names)
 	if err != nil {
 		return nil, err
 	}
@@ -95,12 +107,12 @@ func (q *Queries) GetByName(ctx context.Context, names []string) ([]SkillSnapsho
 
 const getByVariant = `-- name: GetByVariant :one
 SELECT skill_id, name, variants FROM skills
-WHERE ($1 = ANY (variants)) LIMIT 1
+WHERE ($1::text = ANY (variants)) LIMIT 1
 `
 
 // :::: SKILLS ::::
-func (q *Queries) GetByVariant(ctx context.Context, variants []string) (Skill, error) {
-	row := q.db.QueryRow(ctx, getByVariant, variants)
+func (q *Queries) GetByVariant(ctx context.Context, variant string) (Skill, error) {
+	row := q.db.QueryRow(ctx, getByVariant, variant)
 	var i Skill
 	err := row.Scan(&i.SkillID, &i.Name, &i.Variants)
 	return i, err
@@ -111,7 +123,6 @@ SELECT skill_id, name, variants FROM skills
 WHERE variants @> ARRAY[$1]
 `
 
-// SELECT * FROM skills WHERE($1 = ANY (variants));
 func (q *Queries) GetByVariants(ctx context.Context, variants []string) ([]Skill, error) {
 	rows, err := q.db.Query(ctx, getByVariants, variants)
 	if err != nil {
@@ -130,4 +141,20 @@ func (q *Queries) GetByVariants(ctx context.Context, variants []string) ([]Skill
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateSkillSnapshot = `-- name: UpdateSkillSnapshot :exec
+UPDATE skill_snapshots
+SET offer_ids = $2
+WHERE skill_snapshot_id = $1
+`
+
+type UpdateSkillSnapshotParams struct {
+	SkillSnapshotID uuid.UUID
+	OfferIds        []uuid.UUID
+}
+
+func (q *Queries) UpdateSkillSnapshot(ctx context.Context, arg UpdateSkillSnapshotParams) error {
+	_, err := q.db.Exec(ctx, updateSkillSnapshot, arg.SkillSnapshotID, arg.OfferIds)
+	return err
 }
