@@ -1,11 +1,11 @@
-### Java API ###
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-JobJarApi/.env
+*.env
 */.env
+.env
 
 ### STS ###
 .apt_generated
