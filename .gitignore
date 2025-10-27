@@ -6,6 +6,7 @@ target/
 *.env
 */.env
 .env
+*/**/secret.properties
 
 ### STS ###
 .apt_generated
