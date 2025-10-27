@@ -1,10 +1,10 @@
-package org.jobjar.feeder.persistance.services;
+package org.jobjar.muncher.services;
 
 import lombok.RequiredArgsConstructor;
 import models.dtos.OfferCreateDto;
 import models.entities.Skill;
 import models.generics.Tuple;
-import org.jobjar.feeder.persistance.repositories.SkillRepository;
+import org.jobjar.muncher.repositories.SkillRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package org.jobjar.feeder.persistance.repositories;
+package org.jobjar.muncher.repositories;
 
 import models.entities.Offer;
 import org.springframework.data.jpa.repository.JpaRepository;

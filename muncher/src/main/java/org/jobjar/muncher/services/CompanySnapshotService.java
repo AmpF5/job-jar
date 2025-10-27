@@ -1,10 +1,10 @@
-package org.jobjar.feeder.persistance.services;
+package org.jobjar.muncher.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mappers.CompanySnapshotMapper;
 import models.dtos.CompanySnapshotCreateDto;
-import org.jobjar.feeder.persistance.repositories.CompanySnapshotRepository;
+import org.jobjar.muncher.repositories.CompanySnapshotRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

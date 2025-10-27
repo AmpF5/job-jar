@@ -1,11 +1,11 @@
-package org.jobjar.feeder.persistance.services;
+package org.jobjar.muncher.services;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mappers.SkillSnapshotMapper;
 import models.dtos.SkillSnapshotCreateDto;
-import org.jobjar.feeder.persistance.repositories.SkillSnapshotRepository;
+import org.jobjar.muncher.repositories.SkillSnapshotRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

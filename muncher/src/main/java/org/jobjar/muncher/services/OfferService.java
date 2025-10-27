@@ -1,4 +1,4 @@
-package org.jobjar.feeder.persistance.services;
+package org.jobjar.muncher.services;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -7,8 +7,8 @@ import mappers.OfferMapper;
 import models.dtos.CompanySnapshotCreateDto;
 import models.dtos.OfferCreateDto;
 import models.dtos.SkillSnapshotCreateDto;
-import org.jobjar.feeder.persistance.repositories.CompanyRepository;
-import org.jobjar.feeder.persistance.repositories.OfferRepository;
+import org.jobjar.muncher.repositories.CompanyRepository;
+import org.jobjar.muncher.repositories.OfferRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

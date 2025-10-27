@@ -2,7 +2,7 @@ spring:
   config:
     import: optional:file:.env[.properties]
   application:
-    name: JobJarApi
+    name: shared-java
 
   rabbitmq:
     host: ${RABBITMQ_HOST}
