@@ -20,7 +20,7 @@ public class Skill {
     private UUID skillId;
 
     @Column(unique = true)
-    private String name;
+    private final String name;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(columnDefinition = "text[]")

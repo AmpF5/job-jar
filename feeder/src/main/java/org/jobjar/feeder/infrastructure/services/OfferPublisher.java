@@ -12,8 +12,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OfferPublisher {
-    private final RabbitTemplate rabbitTemplate;
     private final static int BATCH_SIZE = 200;
+    private final RabbitTemplate rabbitTemplate;
 
     public void publish(OfferCreateDto offer) {
         rabbitTemplate.convertAndSend(OfferAmqpTopology.EXCHANGE, OfferAmqpTopology.ROUTING_KEY, offer);
@@ -21,10 +21,10 @@ public class OfferPublisher {
 
     public void publishBatch(List<OfferCreateDto> offers) {
         var batches = new ArrayList<List<OfferCreateDto>>();
-       for(int i = 0; i < offers.size(); i += BATCH_SIZE) {
-           var batch = offers.subList(i, Math.min(offers.size(), i + BATCH_SIZE));
+        for (int i = 0; i < offers.size(); i += BATCH_SIZE) {
+            var batch = offers.subList(i, Math.min(offers.size(), i + BATCH_SIZE));
 
-           rabbitTemplate.convertAndSend(OfferAmqpTopology.EXCHANGE, OfferAmqpTopology.ROUTING_KEY, batch);
-       }
+            rabbitTemplate.convertAndSend(OfferAmqpTopology.EXCHANGE, OfferAmqpTopology.ROUTING_KEY, batch);
+        }
     }
 }

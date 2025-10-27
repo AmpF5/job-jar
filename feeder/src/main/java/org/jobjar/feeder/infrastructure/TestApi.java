@@ -22,10 +22,10 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 public class TestApi {
+    private static final Logger log = LoggerFactory.getLogger("Fetching data job");
     private final JustJoinItAdapter justJoinItAdapter;
     private final TheProtocolAdapter theProtocolAdapter;
     private final OfferPublisher offerPublisher;
-    private static final Logger log = LoggerFactory.getLogger("Fetching data job");
 
     @GetMapping()
     public void Test() {

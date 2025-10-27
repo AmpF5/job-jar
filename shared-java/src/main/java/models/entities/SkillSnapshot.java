@@ -17,9 +17,9 @@ public class SkillSnapshot {
     @Id
     private UUID skillSnapshotId;
 
-    private String name;
+    private final String name;
 
-    private Set<UUID> offerIds;
+    private final Set<UUID> offerIds;
 
     public SkillSnapshot(String name, Set<UUID> offerIds) {
         this.name = name;

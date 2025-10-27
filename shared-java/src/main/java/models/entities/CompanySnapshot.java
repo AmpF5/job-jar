@@ -19,9 +19,9 @@ public class CompanySnapshot {
     @UuidGenerator
     private UUID companySnapshotId;
 
-    private String name;
+    private final String name;
 
-    private Set<UUID> offerIds;
+    private final Set<UUID> offerIds;
 
     public CompanySnapshot(String name, Set<UUID> offerIds) {
         this.name = name;

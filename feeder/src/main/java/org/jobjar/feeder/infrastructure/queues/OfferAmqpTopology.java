@@ -19,10 +19,14 @@ public class OfferAmqpTopology {
     private final RabbitTemplate rabbitTemplate;
 
     @Bean
-    DirectExchange offersExchange() { return new DirectExchange(EXCHANGE, true, false); }
+    DirectExchange offersExchange() {
+        return new DirectExchange(EXCHANGE, true, false);
+    }
 
     @Bean
-    Queue offersQueue() { return new Queue(QUEUE, true); }
+    Queue offersQueue() {
+        return new Queue(QUEUE, true);
+    }
 
     @Bean
     Binding offersBinding(Queue q, DirectExchange dex) {

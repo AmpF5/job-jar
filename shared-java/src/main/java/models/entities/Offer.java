@@ -18,13 +18,13 @@ import java.util.UUID;
 @Table(name = "offers")
 public class Offer {
     @Id
-    private UUID offerId;
+    private final UUID offerId;
 
-    private String guid;
+    private final String guid;
 
-    private String title;
+    private final String title;
 
-    private String slug;
+    private final String slug;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -35,24 +35,24 @@ public class Offer {
     private Set<Skill> requiredSkills;
 
     @Enumerated(EnumType.STRING)
-    private WorkplaceType workplaceType;
+    private final WorkplaceType workplaceType;
 
     @Enumerated(EnumType.STRING)
-    private ExperienceLevel experienceLevel;
+    private final ExperienceLevel experienceLevel;
 
     @Enumerated(EnumType.STRING)
-    private JobSite jobSite;
+    private final JobSite jobSite;
 
     @Enumerated(EnumType.STRING)
     private OfferStatus offerStatus;
 
-    private Float minimalWage;
+    private final Float minimalWage;
 
-    private Float maximalWage;
+    private final Float maximalWage;
 
-    private Date publishedAt;
+    private final Date publishedAt;
 
-    private Date expiredAt;
+    private final Date expiredAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")

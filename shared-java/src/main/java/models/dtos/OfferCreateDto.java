@@ -21,7 +21,7 @@ public final class OfferCreateDto {
     private final Float maximalWage;
     private final Date publishedAt;
     private final Date expiredAt;
-    private Set<String> requiredSkills;
+    private final Set<String> requiredSkills;
 
     public OfferCreateDto(
             String externalId,
