@@ -1,8 +1,8 @@
 package org.jobjar.feeder.infrastructure.services;
 
 import lombok.RequiredArgsConstructor;
-import models.dtos.OfferCreateDto;
 import org.jobjar.feeder.infrastructure.queues.OfferAmqpTopology;
+import org.jobjar.feeder.models.generics.OfferCreateDto;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 

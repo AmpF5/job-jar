@@ -1,9 +1,9 @@
 package org.jobjar.feeder.adapters;
 
 import lombok.RequiredArgsConstructor;
-import models.dtos.OfferCreateDto;
-import models.responses.TheProtocolResponse;
 import org.jobjar.feeder.infrastructure.clients.BaseHttpClient;
+import org.jobjar.feeder.models.generics.OfferCreateDto;
+import org.jobjar.feeder.models.responses.TheProtocolResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

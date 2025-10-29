@@ -1,7 +1,7 @@
 package org.jobjar.feeder.infrastructure.services;
 
-import models.enums.HttpClientName;
 import org.jobjar.feeder.infrastructure.configuration.HttpClientPropertiesConfig;
+import org.jobjar.feeder.models.enums.HttpClientName;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

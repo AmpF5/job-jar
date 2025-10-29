@@ -1,13 +1,10 @@
 package org.jobjar.feeder.infrastructure;
 
 import lombok.RequiredArgsConstructor;
-import models.dtos.OfferCreateDto;
-import models.enums.ExperienceLevel;
-import models.enums.JobSite;
-import models.enums.WorkplaceType;
 import org.jobjar.feeder.adapters.JustJoinItAdapter;
 import org.jobjar.feeder.adapters.TheProtocolAdapter;
 import org.jobjar.feeder.infrastructure.services.OfferPublisher;
+import org.jobjar.feeder.models.generics.OfferCreateDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,9 +43,9 @@ public class TestApi {
                 "Java Developer1",
                 "java-developer",
                 "TechCorp",
-                WorkplaceType.REMOTE,
-                ExperienceLevel.MID,
-                JobSite.JUST_JOIN_IT,
+                "REMOTE",
+                "MID",
+                "JUST_JOIN_IT",
                 10000.0f,
                 15000.0f,
                 Date.from(Instant.now()),
@@ -61,9 +58,9 @@ public class TestApi {
                 "Java Developer2",
                 "java-developer",
                 "TechCorp",
-                WorkplaceType.REMOTE,
-                ExperienceLevel.MID,
-                JobSite.JUST_JOIN_IT,
+                "REMOTE",
+                "MID",
+                "JUST_JOIN_IT",
                 10000.0f,
                 15000.0f,
                 Date.from(Instant.now()),
@@ -76,9 +73,9 @@ public class TestApi {
                 "Java Developer3",
                 "java-developer",
                 "TechCorp",
-                WorkplaceType.REMOTE,
-                ExperienceLevel.MID,
-                JobSite.JUST_JOIN_IT,
+                "REMOTE",
+                "MID",
+                "JUST_JOIN_IT",
                 10000.0f,
                 15000.0f,
                 Date.from(Instant.now()),

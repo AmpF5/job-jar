@@ -1,7 +1,8 @@
 package org.jobjar.feeder.adapters;
 
 
-import models.dtos.OfferCreateDto;
+
+import org.jobjar.feeder.models.generics.OfferCreateDto;
 
 import java.util.List;
 

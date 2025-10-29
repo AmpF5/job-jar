@@ -1,10 +1,10 @@
 package org.jobjar.feeder.adapters;
 
 import lombok.RequiredArgsConstructor;
-import mappers.OfferMapper;
-import models.dtos.OfferCreateDto;
-import models.responses.JustJoinItResponse;
 import org.jobjar.feeder.infrastructure.clients.BaseHttpClient;
+import org.jobjar.feeder.mappers.OfferMapper;
+import org.jobjar.feeder.models.generics.OfferCreateDto;
+import org.jobjar.feeder.models.responses.JustJoinItResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package org.jobjar.feeder.infrastructure.configuration;
 
-import models.enums.HttpClientName;
+import org.jobjar.feeder.models.enums.HttpClientName;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

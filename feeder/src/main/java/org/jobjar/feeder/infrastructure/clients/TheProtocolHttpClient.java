@@ -2,8 +2,8 @@ package org.jobjar.feeder.infrastructure.clients;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import models.responses.TheProtocolResponse;
 import org.jobjar.feeder.infrastructure.services.HttpClientPropertiesService;
+import org.jobjar.feeder.models.responses.TheProtocolResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
