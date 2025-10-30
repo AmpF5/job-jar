@@ -1,0 +1,197 @@
+databaseChangeLog:
+- changeSet:
+    id: 1761765804601-1
+    author: user (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: companiesPK
+            name: company_id
+            type: UUID
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: companies
+- changeSet:
+    id: 1761765804601-2
+    author: user (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: company_snapshotsPK
+            name: company_snapshot_id
+            type: UUID
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: offer_ids
+            type: UUID
+        tableName: company_snapshots
+- changeSet:
+    id: 1761765804601-3
+    author: user (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: offer_required_skillsPK
+            name: offer_id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: offer_required_skillsPK
+            name: skill_id
+            type: UUID
+        tableName: offer_required_skills
+- changeSet:
+    id: 1761765804601-4
+    author: user (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: offersPK
+            name: offer_id
+            type: UUID
+        - column:
+            name: experience_level
+            type: VARCHAR(255)
+        - column:
+            name: expired_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: guid
+            type: VARCHAR(255)
+        - column:
+            name: job_site
+            type: VARCHAR(255)
+        - column:
+            name: maximal_wage
+            type: FLOAT4
+        - column:
+            name: minimal_wage
+            type: FLOAT4
+        - column:
+            name: offer_status
+            type: VARCHAR(255)
+        - column:
+            name: published_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: slug
+            type: VARCHAR(255)
+        - column:
+            name: title
+            type: VARCHAR(255)
+        - column:
+            name: workplace_type
+            type: VARCHAR(255)
+        - column:
+            name: company_id
+            type: UUID
+        tableName: offers
+- changeSet:
+    id: 1761765804601-5
+    author: user (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: skill_snapshotsPK
+            name: skill_snapshot_id
+            type: UUID
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: offer_ids
+            type: UUID
+        tableName: skill_snapshots
+- changeSet:
+    id: 1761765804601-6
+    author: user (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: skillsPK
+            name: skill_id
+            type: UUID
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: variants
+            type: TEXT[]
+        tableName: skills
+- changeSet:
+    id: 1761765804601-7
+    author: user (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: name
+        constraintName: UC_SKILLSNAME_COL
+        tableName: skills
+- changeSet:
+    id: 1761765804601-8
+    author: user (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: skill_id
+        baseTableName: offer_required_skills
+        constraintName: FKjalj078sll6mwsauodxtw8618
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: skill_id
+        referencedTableName: skills
+        validate: true
+- changeSet:
+    id: 1761765804601-9
+    author: user (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: company_id
+        baseTableName: offers
+        constraintName: FKpseep21h5a3wppbeooi10ghk8
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: company_id
+        referencedTableName: companies
+        validate: true
+- changeSet:
+    id: 1761765804601-10
+    author: user (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: offer_id
+        baseTableName: offer_required_skills
+        constraintName: FKrcl1a5nbvpxjfsh3r9su22aby
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: offer_id
+        referencedTableName: offers
+        validate: true
+
