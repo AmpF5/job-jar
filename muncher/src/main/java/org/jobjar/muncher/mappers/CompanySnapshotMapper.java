@@ -1,7 +1,8 @@
 package org.jobjar.muncher.mappers;
 
-import models.dtos.CompanySnapshotCreateDto;
-import models.entities.CompanySnapshot;
+
+import org.jobjar.muncher.models.dtos.CompanySnapshotCreateDto;
+import org.jobjar.muncher.models.entities.CompanySnapshot;
 
 public final class CompanySnapshotMapper {
     public static CompanySnapshot toEntity(CompanySnapshotCreateDto dto) {

@@ -1,14 +1,14 @@
 package org.jobjar.muncher.services;
 
 import lombok.RequiredArgsConstructor;
-import models.dtos.OfferCreateDto;
-import models.entities.Skill;
-import models.generics.Tuple;
+import org.jobjar.muncher.models.dtos.OfferCreateDto;
+import org.jobjar.muncher.models.entities.Skill;
+import org.jobjar.muncher.models.generics.Tuple;
 import org.jobjar.muncher.repositories.SkillRepository;
+import org.jobjar.muncher.utils.StringNormalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import utils.StringNormalizer;
 
 import java.util.HashSet;
 import java.util.Objects;

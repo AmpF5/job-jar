@@ -1,6 +1,6 @@
 package org.jobjar.muncher.repositories;
 
-import models.entities.CompanySnapshot;
+import org.jobjar.muncher.models.entities.CompanySnapshot;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

@@ -2,8 +2,8 @@ package org.jobjar.muncher.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mappers.CompanySnapshotMapper;
-import models.dtos.CompanySnapshotCreateDto;
+import org.jobjar.muncher.mappers.CompanySnapshotMapper;
+import org.jobjar.muncher.models.dtos.CompanySnapshotCreateDto;
 import org.jobjar.muncher.repositories.CompanySnapshotRepository;
 import org.springframework.stereotype.Service;
 

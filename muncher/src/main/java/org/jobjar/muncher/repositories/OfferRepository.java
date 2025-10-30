@@ -1,6 +1,6 @@
 package org.jobjar.muncher.repositories;
 
-import models.entities.Offer;
+import org.jobjar.muncher.models.entities.Offer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

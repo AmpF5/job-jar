@@ -1,4 +1,4 @@
-package utils;
+package org.jobjar.muncher.utils;
 
 import java.util.List;
 

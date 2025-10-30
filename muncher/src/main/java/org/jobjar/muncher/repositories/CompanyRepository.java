@@ -1,7 +1,7 @@
 package org.jobjar.muncher.repositories;
 
 
-import models.entities.Company;
+import org.jobjar.muncher.models.entities.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

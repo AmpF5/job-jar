@@ -1,8 +1,8 @@
 package org.jobjar.muncher.mappers;
 
 import lombok.experimental.ExtensionMethod;
-import models.entities.Skill;
-import models.entities.SkillSnapshot;
+import org.jobjar.muncher.models.entities.Skill;
+import org.jobjar.muncher.models.entities.SkillSnapshot;
 
 @ExtensionMethod({Skill.class, SkillSnapshot.class})
 public final class SkillMapper {

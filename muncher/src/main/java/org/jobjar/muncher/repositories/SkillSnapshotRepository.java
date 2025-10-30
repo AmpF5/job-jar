@@ -1,6 +1,6 @@
 package org.jobjar.muncher.repositories;
 
-import models.entities.SkillSnapshot;
+import org.jobjar.muncher.models.entities.SkillSnapshot;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

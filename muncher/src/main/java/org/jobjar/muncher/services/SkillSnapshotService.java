@@ -3,8 +3,8 @@ package org.jobjar.muncher.services;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mappers.SkillSnapshotMapper;
-import models.dtos.SkillSnapshotCreateDto;
+import org.jobjar.muncher.mappers.SkillSnapshotMapper;
+import org.jobjar.muncher.models.dtos.SkillSnapshotCreateDto;
 import org.jobjar.muncher.repositories.SkillSnapshotRepository;
 import org.springframework.stereotype.Service;
 

@@ -3,10 +3,10 @@ package org.jobjar.muncher.models.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import models.enums.ExperienceLevel;
-import models.enums.JobSite;
-import models.enums.OfferStatus;
-import models.enums.WorkplaceType;
+import org.jobjar.muncher.models.enums.ExperienceLevel;
+import org.jobjar.muncher.models.enums.JobSite;
+import org.jobjar.muncher.models.enums.OfferStatus;
+import org.jobjar.muncher.models.enums.WorkplaceType;
 
 import java.util.Date;
 import java.util.Set;

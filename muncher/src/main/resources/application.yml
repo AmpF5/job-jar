@@ -7,6 +7,10 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
     enabled: true
 
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
 
   rabbitmq:
     host: ${RABBITMQ_HOST}
