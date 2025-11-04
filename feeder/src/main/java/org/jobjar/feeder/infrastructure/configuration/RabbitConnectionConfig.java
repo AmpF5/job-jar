@@ -4,20 +4,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.jobjar.feeder.infrastructure.queues.OfferAmqpTopology;
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.TimeZone;
 
 @Configuration
+@EnableConfigurationProperties(MessagingProperties.class)
+@RequiredArgsConstructor
 public class RabbitConnectionConfig {
+    private final MessagingProperties messagingProperties;
     @Bean
     ConnectionFactory connectionFactory(RabbitProperties rabbitProperties) {
         var cf = new CachingConnectionFactory();
@@ -32,8 +36,8 @@ public class RabbitConnectionConfig {
     RabbitTemplate rabbitTemplate(ConnectionFactory cf) {
         var rt = new RabbitTemplate();
         rt.setConnectionFactory(cf);
-        rt.setExchange(OfferAmqpTopology.EXCHANGE);
-        rt.setRoutingKey(OfferAmqpTopology.ROUTING_KEY);
+        rt.setExchange(messagingProperties.exchange());
+        rt.setRoutingKey(messagingProperties.routingKey());
         rt.setMessageConverter(messageConverter(new ObjectMapper()));
         return rt;
     }

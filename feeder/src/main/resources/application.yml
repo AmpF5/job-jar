@@ -48,3 +48,9 @@ http-clients:
       pageNumber: 1
       orderby.field: LastRefreshDateUtc
       pageSize: 50
+
+app:
+  messaging:
+    exchange: offers
+    routing-key: collected
+    queue: offer.collected
