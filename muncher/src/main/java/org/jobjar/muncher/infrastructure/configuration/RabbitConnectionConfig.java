@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.jobjar.muncher.infrastructure.queues.OfferAmqpTopology;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -36,6 +37,15 @@ public class RabbitConnectionConfig {
         rt.setRoutingKey(OfferAmqpTopology.ROUTING_KEY);
         rt.setMessageConverter(messageConverter(new ObjectMapper()));
         return rt;
+    }
+
+    @Bean
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
+        var factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setMessageConverter(messageConverter(new ObjectMapper()));
+
+        return factory;
     }
 
     MessageConverter messageConverter(ObjectMapper objectMapper) {

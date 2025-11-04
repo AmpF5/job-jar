@@ -49,11 +49,11 @@ public class OfferService {
                             .computeIfAbsent(y, v -> new HashSet<>())
                             .add(offer.getOfferId()));
             // Company
-            var company = companyRepository.findByName(x.getCompanyName());
+            var company = companyRepository.findByName(x.companyName());
             company.ifPresentOrElse(
                     offer::setCompany,
                     () -> companiesSnapshots
-                            .computeIfAbsent(x.getCompanyName(), v -> new HashSet<>())
+                            .computeIfAbsent(x.companyName(), v -> new HashSet<>())
                             .add(offer.getOfferId()));
 
             return offer;

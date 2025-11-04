@@ -23,7 +23,7 @@ public class SkillService {
 
     public Tuple<Set<Skill>, Set<String>> getRequiredSkillsAndSnapshots(OfferCreateDto offerCreateDto) {
         var snapshots = new HashSet<String>();
-        var requiredSkills = offerCreateDto.getRequiredSkills()
+        var requiredSkills = offerCreateDto.requiredSkills()
                 .stream()
                 .map(x -> skillRepository
                         .findByVariant(normalizeSkillName(x))
