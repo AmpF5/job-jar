@@ -1,11 +1,16 @@
 package org.jobjar.muncher.models.enums;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 public enum WorkplaceType {
     OFFICE, HYBRID, REMOTE, UNKNOWN;
 
@@ -23,6 +28,7 @@ public enum WorkplaceType {
         LOOKUP = Collections.unmodifiableMap(values);
     }
 
+    @JsonCreator
     public static WorkplaceType map(String value) {
         if (value == null || value.isEmpty()) {
             return WorkplaceType.UNKNOWN;
@@ -30,10 +36,15 @@ public enum WorkplaceType {
 
         var workplaceType = LOOKUP.get(value);
         if (workplaceType == null) {
-//            log.warn("Unknown Workplace Type: {}", value);
+            log.warn("Unknown Workplace Type: {}", value);
             return WorkplaceType.UNKNOWN;
         }
 
         return workplaceType;
+    }
+
+    @JsonValue
+    public String toJson() {
+        return this.name();
     }
 }

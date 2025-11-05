@@ -23,7 +23,8 @@ public final class OfferCreateDto {
     public OfferCreateDto(
             String externalId,
             String title,
-            String slug, String companyName,
+            String slug,
+            String companyName,
             String workplaceType,
             String experienceLevel,
             String jobSite,

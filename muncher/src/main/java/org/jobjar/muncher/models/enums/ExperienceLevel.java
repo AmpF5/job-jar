@@ -1,10 +1,15 @@
 package org.jobjar.muncher.models.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 public enum ExperienceLevel {
     JUNIOR, MID, SENIOR, UNKNOWN;
 
@@ -23,6 +28,7 @@ public enum ExperienceLevel {
         LOOKUP = Collections.unmodifiableMap(values);
     }
 
+    @JsonCreator
     public static ExperienceLevel map(String value) {
         if (value == null || value.isEmpty()) {
             return UNKNOWN;
@@ -30,10 +36,15 @@ public enum ExperienceLevel {
 
         var experienceLevel = LOOKUP.get(value);
         if (experienceLevel == null) {
-//            log.warn("Unknown ExperienceLevel: {}", value);
+            log.warn("Unknown ExperienceLevel: {}", value);
             return UNKNOWN;
         }
 
         return experienceLevel;
+    }
+
+    @JsonValue
+    public String toJson() {
+        return this.name();
     }
 }

@@ -1,5 +1,6 @@
 package org.jobjar.feeder.mappers;
 
+import org.jobjar.feeder.models.enums.HttpClientName;
 import org.jobjar.feeder.models.generics.OfferCreateDto;
 import org.jobjar.feeder.models.responses.JustJoinItResponse;
 
@@ -15,7 +16,7 @@ public class OfferMapper {
                 job.getCompanyName(),
                 job.getWorkplaceType(),
                 job.getExperienceLevel(),
-                job.getExperienceLevel(),
+                HttpClientName.JUST_JOIN_IT.name(),
                 employmentType.getFrom(),
                 employmentType.getTo(),
                 job.getPublishedAt(),

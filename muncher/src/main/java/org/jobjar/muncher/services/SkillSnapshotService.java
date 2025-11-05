@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jobjar.muncher.mappers.SkillSnapshotMapper;
 import org.jobjar.muncher.models.dtos.SkillSnapshotCreateDto;
 import org.jobjar.muncher.repositories.SkillSnapshotRepository;
+import org.jobjar.muncher.utils.TimeConverter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +17,14 @@ public class SkillSnapshotService {
     private final SkillSnapshotRepository skillSnapshotRepository;
 
     public void bulkSaveSkillSnapshots(List<SkillSnapshotCreateDto> skillSnapshots) {
+        var start = System.nanoTime();
+
         skillSnapshotRepository
                 .saveAllAndFlush(skillSnapshots
                         .stream()
                         .map(SkillSnapshotMapper::toEntity)
                         .toList());
-        log.info("Added {} skill snapshot", skillSnapshots.size());
+        var end = System.nanoTime();
+        log.info("Added {} skill snapshot in {} ms.", skillSnapshots.size(), TimeConverter.getElapsedTime(start, end));
     }
 }
