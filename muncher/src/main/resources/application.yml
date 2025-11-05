@@ -3,9 +3,6 @@ spring:
     import: optional:classpath:secret.properties
   application:
     name: muncher
-  liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.yaml
-    enabled: true
 
   jpa:
     hibernate:
@@ -30,3 +27,11 @@ app:
     exchange: offers
     routing-key: collected
     queue: offers.collected
+
+logging:
+  file:
+    name: ../logs/muncher.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n"
+  level:
+    root: info

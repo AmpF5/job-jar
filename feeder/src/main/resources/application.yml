@@ -19,7 +19,7 @@ spring:
 
 logging:
   file:
-    name: logs/api.log
+    name: ../logs/feeder.log
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n"
   level:

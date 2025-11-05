@@ -103,36 +103,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-maven-plugin</artifactId>
-                <version>5.0.1</version>
-
-                <dependencies>
-                    <dependency>
-                        <groupId>org.liquibase.ext</groupId>
-                        <artifactId>liquibase-hibernate6</artifactId>
-                        <version>5.0.1</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>${project.groupId}</groupId>
-                        <artifactId>${project.artifactId}</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
-                </dependencies>
-
-                <configuration>
-                    <propertyFile>src/main/resources/liquibase.properties</propertyFile>
-                    <changeLogFile>src/main/resources/db/db.changelog-master.yaml</changeLogFile>
-                    <diffChangeLogFile>src/main/resources/db/changelog/${maven.build.timestamp}_changelog.yaml</diffChangeLogFile>
-                    <driver>org.postgresql.Driver</driver>
-                    <referenceUrl>hibernate:spring:org.jobjar.muncher.models.entities?dialect=org.hibernate.dialect.PostgreSQLDialect
-                        &amp;hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-                        &amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
-                    </referenceUrl>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
