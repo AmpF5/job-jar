@@ -1,6 +1,5 @@
 package org.jobjar.muncher.models.dtos;
 
-import lombok.Data;
 import org.jobjar.muncher.models.enums.ExperienceLevel;
 import org.jobjar.muncher.models.enums.JobSite;
 import org.jobjar.muncher.models.enums.WorkplaceType;

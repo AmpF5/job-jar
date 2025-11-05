@@ -20,7 +20,7 @@ public class Offer {
     @Id
     private UUID offerId;
 
-    private String guid;
+    private UUID externalId;
 
     private String title;
 
@@ -58,7 +58,7 @@ public class Offer {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    public Offer(String guid,
+    public Offer(UUID externalId,
                  String title,
                  String slug,
                  WorkplaceType workplaceType,
@@ -70,7 +70,7 @@ public class Offer {
                  JobSite jobSite
     ) {
         this.offerId = UUID.randomUUID();
-        this.guid = guid;
+        this.externalId = externalId;
         this.title = title;
         this.slug = slug;
         this.workplaceType = workplaceType;
@@ -80,5 +80,6 @@ public class Offer {
         this.publishedAt = publishedAt;
         this.expiredAt = expiredAt;
         this.jobSite = jobSite;
+        this.offerStatus = OfferStatus.NEW;
     }
 }

@@ -15,7 +15,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "skills")
 public class Skill {
-
     @Id
     private UUID skillId;
 
@@ -30,6 +29,7 @@ public class Skill {
     private Set<Offer> offers;
 
     public Skill(String name) {
+        this.skillId = UUID.randomUUID();
         this.name = name;
     }
 

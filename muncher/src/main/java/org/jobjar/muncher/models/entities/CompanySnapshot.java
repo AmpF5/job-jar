@@ -5,7 +5,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.Set;
 import java.util.UUID;
@@ -16,7 +15,6 @@ import java.util.UUID;
 @Table(name = "company_snapshots")
 public class CompanySnapshot {
     @Id
-    @UuidGenerator
     private UUID companySnapshotId;
 
     private String name;
@@ -24,6 +22,7 @@ public class CompanySnapshot {
     private Set<UUID> offerIds;
 
     public CompanySnapshot(String name, Set<UUID> offerIds) {
+        this.companySnapshotId = UUID.randomUUID();
         this.name = name;
         this.offerIds = offerIds;
     }

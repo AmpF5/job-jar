@@ -21,6 +21,6 @@ public class CompanySnapshotService {
                         .stream()
                         .map(CompanySnapshotMapper::toEntity)
                         .toList());
-        log.info("Added {} skill snapshot to the repository", snapshots.size());
+        log.info("Added {} company snapshot", snapshots.size());
     }
 }

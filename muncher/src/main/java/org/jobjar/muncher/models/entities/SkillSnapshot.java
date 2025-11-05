@@ -22,6 +22,7 @@ public class SkillSnapshot {
     private Set<UUID> offerIds;
 
     public SkillSnapshot(String name, Set<UUID> offerIds) {
+        this.skillSnapshotId = UUID.randomUUID();
         this.name = name;
         this.offerIds = offerIds;
     }

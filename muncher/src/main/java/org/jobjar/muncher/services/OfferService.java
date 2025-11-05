@@ -1,6 +1,5 @@
 package org.jobjar.muncher.services;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jobjar.muncher.mappers.OfferMapper;
@@ -28,7 +27,6 @@ public class OfferService {
 
     }
 
-    @Transactional
     public void bulkSaveOffers(List<OfferCreateDto> offers) {
         // TODO: Take off limiter
         offers = offers.stream().limit(10).toList();
@@ -58,6 +56,7 @@ public class OfferService {
 
             return offer;
         }).toList());
+
 
         skillSnapshotService
                 .bulkSaveSkillSnapshots(skillSnapshots

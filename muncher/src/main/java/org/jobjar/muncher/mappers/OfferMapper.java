@@ -4,11 +4,12 @@ package org.jobjar.muncher.mappers;
 import org.jobjar.muncher.models.dtos.OfferCreateDto;
 import org.jobjar.muncher.models.entities.Offer;
 
+import java.util.UUID;
 
 public final class OfferMapper {
     public static Offer toEntity(OfferCreateDto offerCreateDto) {
         return new Offer(
-                offerCreateDto.externalId(),
+                UUID.fromString(offerCreateDto.externalId()),
                 offerCreateDto.title(),
                 offerCreateDto.slug(),
                 offerCreateDto.workplaceType(),
