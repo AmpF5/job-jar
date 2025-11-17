@@ -26,4 +26,12 @@ public class CompanySnapshot {
         this.name = name;
         this.offerIds = offerIds;
     }
+
+    public void addOfferId(UUID offerId) {
+        this.offerIds.add(offerId);
+    }
+
+    public void addOfferIds(Set<UUID> offerIds) {
+        this.offerIds.addAll(offerIds);
+    }
 }
