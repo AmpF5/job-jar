@@ -14,7 +14,7 @@ import java.util.Optional;
 public class CompanyService {
     private final CompanyRepository companyRepository;
 
-    public Optional<Company> getCompanyByName(String name){
+    public Optional<Company> getCompanyByName(String name) {
         return companyRepository.findByName(name);
     }
 }

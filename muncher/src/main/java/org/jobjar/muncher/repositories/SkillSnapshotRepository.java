@@ -12,5 +12,6 @@ import java.util.UUID;
 public interface SkillSnapshotRepository extends JpaRepository<SkillSnapshot, UUID> {
     @Query(value = "SELECT * FROM skill_snapshots WHERE name in :names", nativeQuery = true)
     List<SkillSnapshot> findByNames(Set<String> names);
+
     Optional<SkillSnapshot> findByName(String name);
 }

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CompanySnapshotService {
     private final CompanySnapshotRepository companySnapshotRepository;
+
     public void handleCompaniesSnapshots(HashMap<String, Set<UUID>> companiesSnapshots) {
         var start = System.nanoTime();
 
@@ -24,10 +25,10 @@ public class CompanySnapshotService {
 
         var companySnapshotsToAdd = new ArrayList<CompanySnapshotCreateDto>();
 
-        for(var companySnapshot: companiesSnapshots.entrySet()) {
+        for (var companySnapshot : companiesSnapshots.entrySet()) {
             var existingCompanySnapshot = existingCompaniesSnapshots.get(companySnapshot.getKey());
-            if(existingCompanySnapshot != null) {
-               existingCompanySnapshot.addOfferIds(companySnapshot.getValue());
+            if (existingCompanySnapshot != null) {
+                existingCompanySnapshot.addOfferIds(companySnapshot.getValue());
             } else {
                 companySnapshotsToAdd.add(new CompanySnapshotCreateDto(companySnapshot.getKey(), companySnapshot.getValue()));
             }

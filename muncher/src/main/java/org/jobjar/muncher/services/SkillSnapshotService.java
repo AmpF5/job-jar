@@ -25,13 +25,13 @@ public class SkillSnapshotService {
 
         var skillSnapshotsToAdd = new ArrayList<SkillSnapshotCreateDto>();
 
-        for(var skillSnapshot: skillSnapshots.entrySet()) {
-           var existingSkillSnapshot = existingSkillSnapshots.get(skillSnapshot.getKey());
-           if(existingSkillSnapshot != null) {
-              existingSkillSnapshot.appendNewOfferIds(skillSnapshot.getValue());
-           } else {
-               skillSnapshotsToAdd.add(new SkillSnapshotCreateDto(skillSnapshot.getKey(), skillSnapshot.getValue()));
-           }
+        for (var skillSnapshot : skillSnapshots.entrySet()) {
+            var existingSkillSnapshot = existingSkillSnapshots.get(skillSnapshot.getKey());
+            if (existingSkillSnapshot != null) {
+                existingSkillSnapshot.appendNewOfferIds(skillSnapshot.getValue());
+            } else {
+                skillSnapshotsToAdd.add(new SkillSnapshotCreateDto(skillSnapshot.getKey(), skillSnapshot.getValue()));
+            }
         }
 
         bulkSaveSkillSnapshots(skillSnapshotsToAdd);
