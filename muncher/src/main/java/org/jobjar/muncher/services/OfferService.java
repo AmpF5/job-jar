@@ -6,14 +6,13 @@ import org.jobjar.muncher.mappers.OfferMapper;
 import org.jobjar.muncher.models.dtos.CompanySnapshotCreateDto;
 import org.jobjar.muncher.models.dtos.OfferCreateDto;
 import org.jobjar.muncher.models.dtos.SkillSnapshotCreateDto;
-import org.jobjar.muncher.repositories.CompanyRepository;
+import org.jobjar.muncher.models.entities.Offer;
 import org.jobjar.muncher.repositories.OfferRepository;
 import org.jobjar.muncher.utils.TimeConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,8 +25,23 @@ public class OfferService {
     private final CompanySnapshotService companySnapshotService;
 
     public void handleOffers(List<OfferCreateDto> offers) {
-        var allOffers = offerRepository.findAll();
+        var allNewOffers = offers.stream().collect(Collectors.toMap(x -> UUID.fromString(x.externalId()), x -> x));
+        var existingOffers = offerRepository.findByExternalIds(allNewOffers.keySet()).stream().collect(Collectors.toMap(Offer::getExternalId, x -> x));
 
+        var newOffersToAdd = new ArrayList<OfferCreateDto>();
+
+        for (var newOffer : allNewOffers.entrySet()) {
+            var existingOffer = existingOffers.get(newOffer.getKey());
+            if (existingOffer != null) {
+                OfferMapper.updateOffer(existingOffer, newOffer.getValue());
+            } else {
+                newOffersToAdd.add(newOffer.getValue());
+            }
+        }
+
+        bulkSaveOffers(newOffersToAdd);
+
+        offerRepository.flush();
     }
 
     public void bulkSaveOffers(List<OfferCreateDto> offers) {
@@ -37,7 +51,7 @@ public class OfferService {
         var skillSnapshots = new HashMap<String, Set<UUID>>();
         var companiesSnapshots = new HashMap<String, Set<UUID>>();
 
-        offerRepository.saveAllAndFlush(offers.stream().map(x -> {
+        offerRepository.saveAll(offers.stream().map(x -> {
             // Handling offer data
             var offer = OfferMapper.toEntity(x);
             var skillsAndSnapshots = skillService.getRequiredSkillsAndSnapshots(x);
@@ -65,18 +79,8 @@ public class OfferService {
 
         log.info("Inserted {} offers in {} ms.", offers.size(), TimeConverter.getElapsedTime(start, end));
 
-        skillSnapshotService
-                .bulkSaveSkillSnapshots(skillSnapshots
-                        .entrySet()
-                        .stream()
-                        .map(x -> new SkillSnapshotCreateDto(x.getKey(), x.getValue()))
-                        .toList());
+        skillSnapshotService.handleSkillSnapshots(skillSnapshots);
 
-        companySnapshotService
-                .bulkSaveCompanySnapshots(companiesSnapshots
-                        .entrySet()
-                        .stream()
-                        .map(x -> new CompanySnapshotCreateDto(x.getKey(), x.getValue()))
-                        .toList());
+        companySnapshotService.handleCompaniesSnapshots(companiesSnapshots);
     }
 }

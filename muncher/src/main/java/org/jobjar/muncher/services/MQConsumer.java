@@ -21,6 +21,6 @@ public class MQConsumer {
     @RabbitListener(queues = "${app.messaging.queue}")
     public void receive(List<OfferCreateDto> offers) {
         logger.info("Received offers {}", offers.size());
-        offerService.bulkSaveOffers(offers);
+        offerService.handleOffers(offers);
     }
 }

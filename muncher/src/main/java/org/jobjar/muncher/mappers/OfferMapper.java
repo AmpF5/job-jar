@@ -22,5 +22,11 @@ public final class OfferMapper {
         );
     }
 
-
+    public static void updateOffer(Offer offer, OfferCreateDto offerCreateDto) {
+       offer.setTitle(offerCreateDto.title());
+       offer.setMinimalWage(offerCreateDto.minimalWage());
+       offer.setMaximalWage(offerCreateDto.maximalWage());
+       offer.setPublishedAt(offerCreateDto.publishedAt());
+       offer.setExpiredAt(offerCreateDto.expiredAt());
+    }
 }
