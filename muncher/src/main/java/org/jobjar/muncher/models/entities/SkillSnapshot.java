@@ -26,4 +26,12 @@ public class SkillSnapshot {
         this.name = name;
         this.offerIds = offerIds;
     }
+
+    public void appendNewOfferId(UUID offerId) {
+        this.offerIds.add(offerId);
+    }
+
+    public void appendNewOfferIds(Set<UUID> offerIds) {
+        this.offerIds.addAll(offerIds);
+    }
 }

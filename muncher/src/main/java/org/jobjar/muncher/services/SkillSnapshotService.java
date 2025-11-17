@@ -8,7 +8,8 @@ import org.jobjar.muncher.repositories.SkillSnapshotRepository;
 import org.jobjar.muncher.utils.TimeConverter;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -16,15 +17,35 @@ import java.util.List;
 public class SkillSnapshotService {
     private final SkillSnapshotRepository skillSnapshotRepository;
 
-    public void bulkSaveSkillSnapshots(List<SkillSnapshotCreateDto> skillSnapshots) {
+    public void handleSkillSnapshots(HashMap<String, Set<UUID>> skillSnapshots) {
         var start = System.nanoTime();
 
+        var existingSkillSnapshots = skillSnapshotRepository.findByNames(skillSnapshots.keySet()).stream().collect(Collectors.toMap(x -> x.getName(), x -> x));
+
+        var skillSnapshotsToAdd = new ArrayList<SkillSnapshotCreateDto>();
+
+        for(var skillSnapshot: skillSnapshots.entrySet()) {
+           var existingSkillSnapshot = existingSkillSnapshots.get(skillSnapshot.getKey());
+           if(existingSkillSnapshot != null) {
+              existingSkillSnapshot.appendNewOfferIds(skillSnapshot.getValue());
+           } else {
+               skillSnapshotsToAdd.add(new SkillSnapshotCreateDto(skillSnapshot.getKey(), skillSnapshot.getValue()));
+           }
+        }
+
+        bulkSaveSkillSnapshots(skillSnapshotsToAdd);
+
+        skillSnapshotRepository.flush();
+
+        var end = System.nanoTime();
+        log.info("Added {} skill snapshot in {} ms.", skillSnapshotsToAdd.size(), TimeConverter.getElapsedTime(start, end));
+    }
+
+    public void bulkSaveSkillSnapshots(List<SkillSnapshotCreateDto> skillSnapshots) {
         skillSnapshotRepository
                 .saveAllAndFlush(skillSnapshots
                         .stream()
                         .map(SkillSnapshotMapper::toEntity)
                         .toList());
-        var end = System.nanoTime();
-        log.info("Added {} skill snapshot in {} ms.", skillSnapshots.size(), TimeConverter.getElapsedTime(start, end));
     }
 }
