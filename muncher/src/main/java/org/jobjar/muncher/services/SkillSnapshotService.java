@@ -8,6 +8,7 @@ import org.jobjar.muncher.models.entities.SkillSnapshot;
 import org.jobjar.muncher.repositories.SkillSnapshotRepository;
 import org.jobjar.muncher.utils.TimeConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,7 +19,8 @@ import java.util.stream.Collectors;
 public class SkillSnapshotService {
     private final SkillSnapshotRepository skillSnapshotRepository;
 
-    public void handleSkillSnapshots(HashMap<String, Set<UUID>> skillSnapshots) {
+    @Transactional
+    public void handleSkillSnapshots(Map<String, HashSet<UUID>> skillSnapshots) {
         var start = System.nanoTime();
 
         var existingSkillSnapshots = skillSnapshotRepository.findByNames(skillSnapshots.keySet()).stream().collect(Collectors.toMap(SkillSnapshot::getName, x -> x));
@@ -36,8 +38,6 @@ public class SkillSnapshotService {
 
         bulkSaveSkillSnapshots(skillSnapshotsToAdd);
 
-        skillSnapshotRepository.flush();
-
         var end = System.nanoTime();
         log.info("Added {} skill snapshot in {} ms.", skillSnapshotsToAdd.size(), TimeConverter.getElapsedTime(start, end));
     }
@@ -48,5 +48,9 @@ public class SkillSnapshotService {
                         .stream()
                         .map(SkillSnapshotMapper::toEntity)
                         .toList());
+    }
+
+    public List<SkillSnapshot> getSkillSnapshotsByNames(Set<String> names) {
+        return skillSnapshotRepository.findByNames(names);
     }
 }

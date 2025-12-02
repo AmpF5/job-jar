@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jobjar.muncher.mappers.CompanySnapshotMapper;
 import org.jobjar.muncher.models.dtos.CompanySnapshotCreateDto;
+import org.jobjar.muncher.models.entities.Company;
 import org.jobjar.muncher.models.entities.CompanySnapshot;
 import org.jobjar.muncher.repositories.CompanySnapshotRepository;
 import org.jobjar.muncher.utils.TimeConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,10 +20,11 @@ import java.util.stream.Collectors;
 public class CompanySnapshotService {
     private final CompanySnapshotRepository companySnapshotRepository;
 
-    public void handleCompaniesSnapshots(HashMap<String, Set<UUID>> companiesSnapshots) {
+    @Transactional
+    public void handleCompaniesSnapshots(Map<String, HashSet<UUID>> companiesSnapshots) {
         var start = System.nanoTime();
 
-        var existingCompaniesSnapshots = companySnapshotRepository.getByCompanySnapshotNames(companiesSnapshots.keySet()).stream().collect(Collectors.toMap(CompanySnapshot::getName, x -> x));
+        var existingCompaniesSnapshots = companySnapshotRepository.findAllInNames(companiesSnapshots.keySet()).stream().collect(Collectors.toMap(CompanySnapshot::getName, x -> x));
 
         var companySnapshotsToAdd = new ArrayList<CompanySnapshotCreateDto>();
 
@@ -36,8 +39,6 @@ public class CompanySnapshotService {
 
         bulkSaveCompanySnapshots(companySnapshotsToAdd);
 
-        companySnapshotRepository.flush();
-
         var end = System.nanoTime();
         log.info("Added {} company snapshot in {}ms .", companySnapshotsToAdd.size(), TimeConverter.getElapsedTime(start, end));
     }
@@ -48,5 +49,9 @@ public class CompanySnapshotService {
                         .stream()
                         .map(CompanySnapshotMapper::toEntity)
                         .toList());
+    }
+
+    public List<CompanySnapshot> findAllInNames(Set<String> names) {
+       return companySnapshotRepository.findAllInNames(names);
     }
 }

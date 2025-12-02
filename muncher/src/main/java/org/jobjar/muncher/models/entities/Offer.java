@@ -82,4 +82,9 @@ public class Offer {
         this.jobSite = jobSite;
         this.offerStatus = OfferStatus.NEW;
     }
+
+
+    public void addRequiredSkill(Skill skill) {
+        this.requiredSkills.add(skill);
+    }
 }

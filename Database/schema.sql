@@ -34,8 +34,8 @@ CREATE TABLE offers (
     workplace_type character varying(255) NOT NULL,
     offer_status character varying(255) NOT NULL,
     company_id uuid NULL,
-    minimal_wage real NOT NULL,
-    maximal_wage real NOT NULL,
+    minimal_wage real,
+    maximal_wage real,
     slug character varying(255) NOT NULL,
     expired_at timestamp(6) with time zone NOT NULL,
     published_at timestamp(6) with time zone NOT NULL
