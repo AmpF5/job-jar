@@ -37,7 +37,7 @@ CREATE TABLE offers (
     minimal_wage real,
     maximal_wage real,
     slug character varying(255) NOT NULL,
-    expired_at timestamp(6) with time zone NOT NULL,
+    expired_at timestamp(6) with time zone,
     published_at timestamp(6) with time zone NOT NULL
 );
 
