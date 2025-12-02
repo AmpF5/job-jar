@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jobjar.feeder.models.generics.IOfferResponse;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -44,7 +45,7 @@ public class TheProtocolResponse implements IOfferResponse {
         private List<TypeOfContract> typesOfContracts;
         private List<String> technologies;
         private boolean _new;
-        private String publicationDateUtc;
+        private Date publicationDateUtc;
         private boolean lastCall;
         private String language;
         private Salary salary;
